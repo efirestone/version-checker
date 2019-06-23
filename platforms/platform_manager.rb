@@ -1,3 +1,5 @@
+require_relative 'platform.rb'
+
 class PlatformManager
 
   def initialize
@@ -22,6 +24,7 @@ class PlatformManager
 
   # Register a platform class
   def register(platform_class)
+    raise "Cannot register class #{platform_class} which does not subclass from Platform" unless platform_class < Platform
     @platforms_by_name[platform_class.name] = platform_class
   end
 
