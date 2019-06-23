@@ -44,3 +44,17 @@ mqtt:
   username: version_check_user
   password: password123
 ```
+
+## Q & A
+
+**Q**: Why build Version Checker as a separate system and not a Home Assistant component?
+
+**A**: There are two reasons for this: security and flexibility.
+
+Version Checker needs authentication credentials (often including passwordless SSH) to many different systems and devices in your home, and unlike Home Assistant has no need to be exposed publicly in any way as it only communicates through MQTT. By separating Version Checker and Home Assistant we don't give up Version Checker's secrets if someone does manage to infiltrate Home Assistant's rather large attack surface.
+
+Having the two be separate also provides flexibility. Version Checker publishes Home Assistant-specific discovery MQTT messages, but the messages published containing the actual version checks are not Home Assistant-specific in any way and could be read by any system that finds them valuable, such as another home automation platform or home lab dashboard.
+
+**Q**: Why Ruby and not Python like Home Assistant?
+
+**A**: No particular reason other than I know Ruby better than Python and it doesn't need to interface with Home Assistant Python APIs directly.
