@@ -47,6 +47,7 @@ end
 @platform_manager = PlatformManager.new
 @platform_manager.register(BlueIrisPlatform)
 @platform_manager.register(TasmotaPlatform)
+@platform_manager.register(UniFiPlatform)
 
 @config = Config.new(config_file_path, @platform_manager)
 
