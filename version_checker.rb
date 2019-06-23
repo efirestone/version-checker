@@ -6,6 +6,9 @@ require 'mqtt'
 require_relative 'config.rb'
 require_relative 'platforms/platform_manager.rb'
 
+project_root = File.dirname(File.absolute_path(__FILE__))
+Dir.glob(project_root + '/platforms/*/*_platform.rb') { |file| require file }
+
 config_file_path = './configuration.yaml'
 
 # Methods
