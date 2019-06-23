@@ -44,7 +44,7 @@ def run_checks
 
     @config.device_configs.each do |device_config|
       threads << Thread.new do
-        platform = @platform_manager.platform_for(device_config)
+        platform = @platform_manager.platform_for(device_config, @config)
         platform.payload_factories.each do |factory|
           publish_discovery_info(client, factory)
           publish_version_info(client, factory)

@@ -1,13 +1,14 @@
 
 class LocalDockerContainersList
 
-  def initialize(user, host)
+  def initialize(username, host, ssh_params)
     @host = host
-    @user = user
+    @username = username
+    @ssh_params = ssh_params
   end
 
   def get_containers_list
-    output = `ssh #{@user}@#{@host} -oPasswordAuthentication=no docker ps --no-trunc --format "{{.ID}}"`
+    output = `ssh #{@username}@#{@host} #{@ssh_params} docker ps --no-trunc --format "{{.ID}}"`
 
     raise "Failed to connect to #{@host}" unless $?.success?
 
@@ -15,7 +16,7 @@ class LocalDockerContainersList
       next if container_id.strip.empty?
 
       # TODO: May be able to pull the network data from other parts of the config
-      output = `ssh #{@user}@#{@host} -oPasswordAuthentication=no docker inspect #{container_id} --format "{{.Image}}\\|{{.Config.Image}}\\|{{.State.StartedAt}}\\|{{.Config.Hostname}}\\|{{.NetworkSettings.IPAddress}}"`
+      output = `ssh #{@username}@#{@host} #{@ssh_params} docker inspect #{container_id} --format "{{.Image}}\\|{{.Config.Image}}\\|{{.State.StartedAt}}\\|{{.Config.Hostname}}\\|{{.NetworkSettings.IPAddress}}"`
 
       values = output.strip.split('|')
 

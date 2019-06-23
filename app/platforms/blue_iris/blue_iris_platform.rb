@@ -31,8 +31,9 @@ end
 
 class BlueIrisPlatform < Platform
 
-  def initialize(device_config)
+  def initialize(device_config, global_config)
     @device_config = device_config
+    @global_config = global_config
   end
 
   def self.name
@@ -75,7 +76,7 @@ class BlueIrisPlatform < Platform
 
   # Returns the currently installed version
   private def fetch_current_version
-    output = `ssh #{@device_config.username}@#{@device_config.host} -oPasswordAuthentication=no wmic datafile where name=\\\"C:\\\\\\\\Program Files\\\\\\\\Blue Iris 4\\\\\\\\BlueIris.exe\\\" get Version`
+    output = `ssh #{@device_config.username}@#{@device_config.host} #{@global_config.ssh.command_line_params} wmic datafile where name=\\\"C:\\\\\\\\Program Files\\\\\\\\Blue Iris 4\\\\\\\\BlueIris.exe\\\" get Version`
 
     return nil unless $?.success?
 
@@ -133,7 +134,7 @@ class BlueIrisPlatform < Platform
   end
 
   private def fetch_network_interfaces
-    output = `ssh #{@device_config.username}@#{@device_config.host} -oPasswordAuthentication=no ipconfig \\/all`
+    output = `ssh #{@device_config.username}@#{@device_config.host} #{@global_config.ssh.command_line_params} ipconfig \\/all`
 
     lines = output.split("\n")
 

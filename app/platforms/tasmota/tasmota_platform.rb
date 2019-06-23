@@ -7,7 +7,7 @@ require_relative '../platform.rb'
 
 class TasmotaPlatform < Platform
 
-  def initialize(device_config)
+  def initialize(device_config, global_config)
     @device_config = device_config
 
     @host = "http://#{device_config.host}" unless @device_config.host.start_with?('http')

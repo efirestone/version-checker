@@ -2,7 +2,7 @@ require_relative 'device_config.rb'
 
 class Platform
 
-  def initialize(device_config)
+  def initialize(device_config, global_config)
     raise "Abstract initializer called"
   end
 

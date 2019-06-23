@@ -45,6 +45,17 @@ mqtt:
   password: password123
 ```
 
+### `ssh` section
+
+The SSH section allows customization of SSH behavior. For most people the default behavior will be fine and this section can be omitted.
+
+- `fail_on_host_changes` - (Optional, default false) If set to true then changes to the SSH signature for a given host will cause the corresponding version check to fail. By default this is disabled as most SSH connections will be to internal hosts and devices where the most likely reason for a signature changes is that the device was updated, and not because of a man-in-the-middle attack.
+
+```
+ssh:
+  fail_on_host_changes: true
+```
+
 ### `version_checks` section
 
 The `version_checks` section lists all of the devices that you want to run version checks on. See the `platforms` folder for the list of supported platforms, but generally the config will look something like:

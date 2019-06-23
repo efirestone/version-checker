@@ -29,7 +29,7 @@ end
 
 class PfSensePlatform < Platform
 
-  def initialize(device_config)
+  def initialize(device_config, global_config)
     @device_config = device_config
   end
 

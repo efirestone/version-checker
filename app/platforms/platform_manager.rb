@@ -17,9 +17,9 @@ class PlatformManager
     platform_class.new_config(info)
   end
 
-  def platform_for(device_config)
+  def platform_for(device_config, global_config)
     platform_class = @platforms_by_name[device_config.platform]
-    platform_class.new(device_config)
+    platform_class.new(device_config, global_config)
   end
 
   # Register a platform class

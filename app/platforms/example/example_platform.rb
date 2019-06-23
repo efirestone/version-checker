@@ -21,7 +21,7 @@ end
 
 class ExamplePlatform < Platform
 
-  def initialize(device_config)
+  def initialize(device_config, global_config)
   end
 
   def self.name

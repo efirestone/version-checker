@@ -25,8 +25,9 @@ end
 
 class UniFiPlatform < Platform
 
-  def initialize(device_config)
+  def initialize(device_config, global_config)
     @device_config = device_config
+    @global_config = global_config
   end
 
   def self.name
@@ -74,7 +75,7 @@ class UniFiPlatform < Platform
 
   # Returns info from the actual device
   private def fetch_current_device_info
-    output = `ssh #{@device_config.username}@#{@device_config.host} -oPasswordAuthentication=no mca-cli-op info`
+    output = `ssh #{@device_config.username}@#{@device_config.host} #{@global_config.ssh.command_line_params} mca-cli-op info`
 
     raise "Failed to connect to #{@device_config.host}" unless $?.success?
 

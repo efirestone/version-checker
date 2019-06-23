@@ -25,8 +25,9 @@ end
 
 class DockerPlatform < Platform
 
-  def initialize(device_config)
+  def initialize(device_config, global_config)
     @device_config = device_config
+    @global_config = global_config
   end
 
   def self.name
@@ -38,7 +39,11 @@ class DockerPlatform < Platform
   end
 
   def payload_factories
-    images = LocalDockerContainersList.new(@device_config.username, @device_config.host).get_containers_list
+    images = LocalDockerContainersList.new(
+      @device_config.username,
+      @device_config.host,
+      @global_config.ssh.command_line_params
+    ).get_containers_list
 
     monitored_repositories = @device_config.monitored_repositories
 
