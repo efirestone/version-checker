@@ -30,7 +30,7 @@ config:
   check_interval: 30
 ```
 
-## `mqtt` section
+### `mqtt` section
 
 - `host` - The host name of the MQTT broker. This should not include the `mqtt://` schema.
 
@@ -43,6 +43,27 @@ mqtt:
   host: mosquitto.example.com
   username: version_check_user
   password: password123
+```
+
+### `version_checks` section
+
+The `version_checks` section lists all of the devices that you want to run version checks on. See the `platforms` folder for the list of supported platforms, but generally the config will look something like:
+
+```
+version_checks:
+  - platform: pfsense
+    host: https://pfsense.example.com:900
+    topic: software/pfsense
+    username: pfsense_user
+    password: pfsense_users_password
+
+  - platform: tasmota
+    host: washerplug.example.com
+    topic: laundry_room/washer
+
+  - platform: tasmota
+    host: dryerplug.example.com
+    topic: laundry_room/dryer
 ```
 
 ## Q & A
