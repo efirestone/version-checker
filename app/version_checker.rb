@@ -10,8 +10,6 @@ require_relative 'platforms/tasmota/tasmota_platform.rb'
 project_root = File.dirname(File.absolute_path(__FILE__))
 Dir.glob(project_root + '/platforms/*/*_platform.rb') { |file| require file }
 
-config_file_path = './configuration.yaml'
-
 # Methods
 
 def run_checks
@@ -65,6 +63,9 @@ end
 [BlueIrisPlatform, DockerPlatform, PfSensePlatform, TasmotaPlatform, UniFiPlatform].each do |platform_class|
   @platform_manager.register(platform_class)
 end
+
+config_file_path = ARGV[0]
+raise "The configuration file path must be specified as an argument." if config_file_path == nil
 
 @config = Config.new(config_file_path, @platform_manager)
 
