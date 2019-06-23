@@ -16,6 +16,22 @@ config_file_path = './configuration.yaml'
 
 def run_checks
 
+  def publish_discovery_info(client, payload_factory)
+    # Current Version Sensor
+    client.publish(
+      payload_factory.current_version_sensor_discovery_topic,
+      payload_factory.current_version_sensor_discovery_payload.to_json,
+      true
+    )
+
+    # Latest Version Sensor
+    client.publish(
+      payload_factory.latest_version_sensor_discovery_topic,
+      payload_factory.latest_version_sensor_discovery_payload.to_json,
+      true
+    )
+  end
+
   def publish_version_info(client, payload_factory)
     client.publish(
       payload_factory.version_update_topic,
@@ -32,6 +48,7 @@ def run_checks
       threads << Thread.new do
         platform = @platform_manager.platform_for(device_config)
         platform.payload_factories.each do |factory|
+          publish_discovery_info(client, factory)
           publish_version_info(client, factory)
         end
       end

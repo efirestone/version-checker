@@ -6,6 +6,8 @@ This tool allows you to monitor whether or not various firmware and software com
 
 The tool supports varying types of components (platforms), such as smart plugs, Docker images, as well as some specific software packages. It is designed so that additional platforms can be added relatively easily.
 
+The tool also has specific support for [Home Assistant](https://www.home-assistant.io), and will publish special [discovery](https://www.home-assistant.io/docs/mqtt/discovery) messages to the MQTT broker which allow the devices to show up automatically, along with two sensors for the currently installed and latest versions of those devices. To use this functionality, make sure that MQTT discovery is enabled in your Home Assistant configuration.
+
 ## Vocabulary
 
 - *device* - A "device" refers to any thing that is having its version checked. For some checks this might be a software package and not an actual physical device.

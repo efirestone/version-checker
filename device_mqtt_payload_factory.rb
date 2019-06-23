@@ -1,8 +1,70 @@
 class DeviceMqttPayloadFactory
 
-  def initialize(topic, state_info)
+  def initialize(topic, state_info, id = nil)
+    @id = id || get_unique_id(state_info)
     @topic = topic
     @state_info = state_info
+  end
+
+  # Current Version Sensor Discovery
+
+  def current_version_sensor_discovery_payload
+    current_version = @state_info[:current_version]
+    latest_version = @state_info[:latest_version]
+
+    icon = case
+    when latest_version == nil ; 'mdi:help-circle-outline'
+    when current_version == latest_version ; 'mdi:check-circle-outline'
+    else 'mdi:alert-circle-outline'
+    end
+
+    {
+      'uniq_id' => current_version_id,
+      'name' => "#{sensor_name_prefix} Version",
+      'ic' => icon,
+      'dev' => device,
+
+      '~' => "#{@topic}/tele/",
+
+      'stat_t' => '~VERSION',
+      'val_tpl' => '{{value_json.current_version}}',
+
+      'json_attr_t' => '~VERSION',
+    }
+  end
+
+  def current_version_sensor_discovery_topic
+    "homeassistant/sensor/#{current_version_id}/config"
+  end
+
+  private def current_version_id
+    "#{@id}_Current_Version"
+  end
+
+  # Latest Version Sensor Discovery
+
+  def latest_version_sensor_discovery_payload
+    {
+      'uniq_id' => latest_version_id,
+      'name' => "#{sensor_name_prefix} Latest Version",
+      'ic' => 'mdi:arrow-down-bold-circle-outline',
+
+      # For the second payload just include the IDs to reduce traffic.
+      'dev' => {'ids' => device['ids']},
+
+      '~' => "#{@topic}/tele/",
+
+      'stat_t' => '~VERSION',
+      'val_tpl' => '{{value_json.latest_version}}',
+    }
+  end
+
+  def latest_version_sensor_discovery_topic
+    "homeassistant/sensor/#{latest_version_id}/config"
+  end
+
+  private def latest_version_id
+    "#{@id}_Latest_Version"
   end
 
   # Version Update
@@ -27,6 +89,51 @@ class DeviceMqttPayloadFactory
 
   def version_update_topic
     "#{@topic}/tele/VERSION"
+  end
+
+  # Private Methods
+
+  private def device
+    device = {
+      'ids' => [@id],
+      'name' => @state_info[:name],
+      'mf' => @state_info[:manufacturer],
+      'mdl' => @state_info[:model],
+      'sw' => @state_info[:current_version],
+    }.compact
+
+    if @state_info[:mac_address] != nil
+      device['cns'] ||= []
+      device['cns'] << ['mac', @state_info[:mac_address]]
+    end
+
+    if @state_info[:ipv4_address] != nil
+      device['cns'] ||= []
+      device['cns'] << ['ipv4', @state_info[:ipv4_address]]
+    end
+
+    device
+  end
+
+  private def get_unique_id(info)
+    # Use the last six characters of the MAC address if available
+    id = info[:mac_address]
+    id = id.gsub(':', '')[-6..-1].upcase unless id.nil?
+
+    manufacturer = info[:manufacturer]
+    model = info[:model]
+
+    if manufacturer != nil && model != nil
+      id ||= "#{manufacturer}_#{model}"
+    else
+      id ||= model || manufacturer
+    end
+
+    id
+  end
+
+  private def sensor_name_prefix
+    @state_info[:name] || @state_info[:model]
   end
 
 end
