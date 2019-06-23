@@ -2,6 +2,8 @@ require 'yaml'
 
 class Config
 
+  # MQTT Config
+
   class Mqtt
 
     attr_reader :host, :password, :username
@@ -19,7 +21,28 @@ class Config
 
   end
 
-  attr_reader :check_interval, :mqtt
+  # Checker Config
+
+  # This is for a basic checker. Checkers with more parameters can subclass.
+  class Checker
+
+    attr_reader :host, :platform, :topic
+
+    def initialize(config)
+      @host = config['host']
+      @platform = config['platform']
+      @topic = config['topic']
+
+      raise "Version check definition does not include a 'host'" if @host == nil
+      raise "Version check definition does not include a 'platform'" if @platform == nil
+      raise "Version check definition does not include an MQTT 'topic'" if @topic == nil
+    end
+
+  end
+
+  # Top Level Config
+
+  attr_reader :check_interval, :checkers, :mqtt
 
   def initialize(file_path)
     raise "No configuration file found at #{file_path}" unless File.exist?(file_path)
@@ -39,6 +62,11 @@ class Config
     raise "Configuration does not contain an 'mqtt' section" if mqtt_config == nil
 
     @mqtt = Mqtt.new(mqtt_config)
+
+    @checkers = []
+    config['version_checks'].each do |checker|
+      @checkers << Checker.new(checker)
+    end
   end
 
 end

@@ -13,7 +13,15 @@ def run_checks
 
     threads = []
 
-    # TODO: Run all the checkers
+    @config.checkers.each do |checker|
+      threads << Thread.new do
+        case checker.platform
+        when 'example'
+        else
+          puts "Unsupported platform '#{checker.platform}'. Skipping."
+        end
+      end
+    end
 
     # Wait for the threads to finish
     threads.each(&:join)
