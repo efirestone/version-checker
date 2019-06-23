@@ -45,6 +45,7 @@ end
 # Main program
 
 @platform_manager = PlatformManager.new
+@platform_manager.register(BlueIrisPlatform)
 @platform_manager.register(TasmotaPlatform)
 
 @config = Config.new(config_file_path, @platform_manager)
