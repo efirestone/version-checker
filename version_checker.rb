@@ -5,6 +5,7 @@ require 'mqtt'
 
 require_relative 'config.rb'
 require_relative 'platforms/platform_manager.rb'
+require_relative 'platforms/tasmota/tasmota_platform.rb'
 
 project_root = File.dirname(File.absolute_path(__FILE__))
 Dir.glob(project_root + '/platforms/*/*_platform.rb') { |file| require file }
@@ -44,6 +45,7 @@ end
 # Main program
 
 @platform_manager = PlatformManager.new
+@platform_manager.register(TasmotaPlatform)
 
 @config = Config.new(config_file_path, @platform_manager)
 
