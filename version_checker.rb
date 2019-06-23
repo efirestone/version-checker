@@ -45,9 +45,9 @@ end
 # Main program
 
 @platform_manager = PlatformManager.new
-@platform_manager.register(BlueIrisPlatform)
-@platform_manager.register(TasmotaPlatform)
-@platform_manager.register(UniFiPlatform)
+[BlueIrisPlatform, PfSensePlatform, TasmotaPlatform, UniFiPlatform].each do |platform_class|
+  @platform_manager.register(platform_class)
+end
 
 @config = Config.new(config_file_path, @platform_manager)
 
