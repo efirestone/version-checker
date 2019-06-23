@@ -30,5 +30,5 @@ while true
   rescue StandardError => error
     puts "Version check batch failed: #{error}"
   end
-  sleep(30 * 3600)
+  sleep(@config.check_interval)
 end
