@@ -92,7 +92,7 @@ class TasmotaPlatform < Platform
     end
 
     # We expect a URL redirect
-    return nil unless response.code == 302
+    return nil unless response.code.to_i == 302
 
     # The /latest URL redirects to the latest version, so extract the version number from the URL.
     version = URI(response['Location']).path.split('/').last
