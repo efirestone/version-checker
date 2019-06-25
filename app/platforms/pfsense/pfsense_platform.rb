@@ -29,10 +29,6 @@ end
 
 class PfSensePlatform < Platform
 
-  def initialize(device_config, global_config)
-    @device_config = device_config
-  end
-
   def self.name
     "pfsense"
   end

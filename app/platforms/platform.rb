@@ -2,8 +2,11 @@ require_relative 'device_config.rb'
 
 class Platform
 
+  attr_reader :device_config, :global_config
+
   def initialize(device_config, global_config)
-    raise "Abstract initializer called"
+    @device_config = device_config
+    @global_config = global_config
   end
 
   def self.new_config(info)

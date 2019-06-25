@@ -25,11 +25,6 @@ end
 
 class DockerPlatform < Platform
 
-  def initialize(device_config, global_config)
-    @device_config = device_config
-    @global_config = global_config
-  end
-
   def self.name
     "docker"
   end

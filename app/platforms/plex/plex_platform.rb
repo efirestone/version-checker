@@ -23,10 +23,6 @@ end
 
 class PlexPlatform < Platform
 
-  def initialize(device_config, global_config)
-    @device_config = device_config
-  end
-
   def self.name
     "plex"
   end
