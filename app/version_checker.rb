@@ -46,22 +46,26 @@ def run_checks(config)
     )
   end
 
-  MQTT::Client.connect("mqtt://#{config.mqtt.username}:#{config.mqtt.password}@#{config.mqtt.host}") do |client|
+  begin
+    MQTT::Client.connect("mqtt://#{config.mqtt.username}:#{config.mqtt.password}@#{config.mqtt.host}") do |client|
 
-    threads = []
+      threads = []
 
-    config.device_configs.each do |device_config|
-      threads << Thread.new do
-        platform = @platform_manager.platform_for(device_config, config)
-        platform.payload_factories.each do |factory|
-          publish_discovery_info(client, factory)
-          publish_version_info(client, factory)
+      config.device_configs.each do |device_config|
+        threads << Thread.new do
+          platform = @platform_manager.platform_for(device_config, config)
+          platform.payload_factories.each do |factory|
+            publish_discovery_info(client, factory)
+            publish_version_info(client, factory)
+          end
         end
       end
-    end
 
-    # Wait for the threads to finish
-    threads.each(&:join)
+      # Wait for the threads to finish
+      threads.each(&:join)
+    end
+  rescue SocketError => exception
+    puts "Error connecting to mqtt://#{config.mqtt.host}:\n   #{exception}"
   end
 end
 
