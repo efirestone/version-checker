@@ -58,7 +58,7 @@ end
 # Main program
 
 @platform_manager = PlatformManager.new
-[BlueIrisPlatform, DockerPlatform, PfSensePlatform, TasmotaPlatform, UniFiPlatform].each do |platform_class|
+[BlueIrisPlatform, DockerPlatform, PfSensePlatform, PlexPlatform, TasmotaPlatform, UniFiPlatform].each do |platform_class|
   @platform_manager.register(platform_class)
 end
 
