@@ -51,7 +51,11 @@ class PlexPlatform < Platform
   private def fetch_library_info
     uri = URI.parse(@device_config.host) + '/media/providers'
 
-    response = fetch(uri)
+    begin
+      response = fetch(uri)
+    rescue SocketError => exception
+      raise_current_version_check_error(exception.message)
+    end
 
     json = JSON.parse(response.body)
 
@@ -70,7 +74,12 @@ class PlexPlatform < Platform
     uri = URI.parse(@device_config.host) + '/updater/status'
     uri.query = URI.encode_www_form({ 'download' => '0' })
 
-    response = fetch(uri)
+    begin
+      response = fetch(uri)
+    rescue => exception
+      puts "Error fetching latest Plex version: #{exception}"
+      return {}
+    end
 
     json = JSON.parse(response.body)
     container = json['MediaContainer']
@@ -98,10 +107,15 @@ class PlexPlatform < Platform
     request['accept'] = 'application/json'
     request['X-Plex-Token'] = @device_config.auth_token
 
-    Net::HTTP.start(uri.host, uri.port,
-      :use_ssl => uri.scheme == 'https',
-      :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |https|
-      https.request(request)
+    begin
+      Net::HTTP.start(uri.host, uri.port,
+        :use_ssl => uri.scheme == 'https',
+        :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |https|
+        https.request(request)
+      end
+    rescue Net::OpenTimeout => e
+      puts "Failed to connect to #{uri.host}: #{e}"
+      return nil
     end
   end
 

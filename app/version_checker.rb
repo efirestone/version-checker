@@ -53,10 +53,23 @@ def run_checks(config)
 
       config.device_configs.each do |device_config|
         threads << Thread.new do
-          platform = @platform_manager.platform_for(device_config, config)
-          platform.payload_factories.each do |factory|
-            publish_discovery_info(client, factory)
-            publish_version_info(client, factory)
+          begin
+            platform = @platform_manager.platform_for(device_config, config)
+            platform.payload_factories.each do |factory|
+              publish_discovery_info(client, factory)
+              publish_version_info(client, factory)
+            end
+
+          # CurrentVersionCheckErrors are expected sometimes based on runtime conditions
+          # (network is down, etc) so log nicely.
+          rescue Platform::CurrentVersionCheckError => exception
+            puts exception.message
+            puts "\nSkipping version check for '#{exception.platform}' device at '#{exception.host}'\n\n"
+
+          rescue => exception
+            # Other exceptions are programmer error, such as an exception that needed to be
+            # caught earlier and silenced or should have been wrapped as a CurrentVersionCheckError.
+            puts "Problem during version check: #{exception}\n   #{exception.backtrace.join("\n   ")}"
           end
         end
       end
