@@ -69,8 +69,7 @@ class Config
 
     config = YAML.load_file(file_path)
 
-    # By default we'll check every 30 minutes
-    @check_interval = 30 * 3600
+    @check_interval = self.class.default_check_interval
     if value = config['config']['check_interval']
       value = value.to_i
       raise "Check interval cannot be zero" if value == 0
@@ -93,6 +92,11 @@ class Config
         puts "Ignoring config: #{exception}\n   #{exception.backtrace.join("\n   ")}"
       end
     end
+  end
+
+  def self.default_check_interval
+    # By default we'll check every 30 minutes
+    30 * 3600
   end
 
 end

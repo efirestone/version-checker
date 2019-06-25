@@ -10,7 +10,17 @@ Dir.glob(project_root + '/platforms/*/*_platform.rb') { |file| require file }
 
 # Methods
 
-def run_checks
+def read_config(path)
+  begin
+    return Config.new(path, @platform_manager)
+  rescue => exception
+    puts "Configuration error:\n   #{exception}"
+  end
+
+  nil
+end
+
+def run_checks(config)
 
   def publish_discovery_info(client, payload_factory)
     # Current Version Sensor
@@ -36,13 +46,13 @@ def run_checks
     )
   end
 
-  MQTT::Client.connect("mqtt://#{@config.mqtt.username}:#{@config.mqtt.password}@#{@config.mqtt.host}") do |client|
+  MQTT::Client.connect("mqtt://#{config.mqtt.username}:#{config.mqtt.password}@#{config.mqtt.host}") do |client|
 
     threads = []
 
-    @config.device_configs.each do |device_config|
+    config.device_configs.each do |device_config|
       threads << Thread.new do
-        platform = @platform_manager.platform_for(device_config, @config)
+        platform = @platform_manager.platform_for(device_config, config)
         platform.payload_factories.each do |factory|
           publish_discovery_info(client, factory)
           publish_version_info(client, factory)
@@ -65,13 +75,14 @@ end
 config_file_path = ARGV[0]
 raise "The configuration file path must be specified as an argument." if config_file_path == nil
 
-@config = Config.new(config_file_path, @platform_manager)
-
 while true
+  # Read the config file each time to potentially pick up new changes
+  config = read_config(config_file_path)
+
   begin
-    run_checks
+    run_checks(config) unless config == nil
   rescue => exception
     puts "Version check batch failed: #{exception}\n   #{exception.backtrace.join("\n   ")}"
   end
-  sleep(@config.check_interval)
+  sleep(config&.check_interval || Config.default_check_interval)
 end
