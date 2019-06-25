@@ -59,6 +59,11 @@ class RemoteDockerImagesList
   end
 
   private def cache_manifest(manifest, reference, variant)
+    # Keep an in-memory cache as well so we're not going to disk if we don't need to.
+    @cache ||= {}
+
+    @cache["#{reference}/#{variant}"] = manifest
+
     path = File.join(@cache_dir, reference, "#{variant}.json")
     dir = File.dirname(path)
 
@@ -68,6 +73,11 @@ class RemoteDockerImagesList
   end
 
   private def get_cached_manifest(reference, variant)
+    # Check the in-memory cache first
+    manifest = @cache["#{reference}/#{variant}"]
+    return manifest unless manifest == nil
+
+    # Then check the file system cache
     path = File.join(@cache_dir, reference, "#{variant}.json")
 
     return nil unless File.exist?(path)
