@@ -18,8 +18,6 @@ class DockerImageDeviceCheck
 
     image_list = RemoteDockerImagesList.new(@repository)
 
-    ignored_tags = self.class.common_latest_tags + [@tag]
-
     # To start, check if the image associated with the given tag is still the same.
     # If, for example, the 'latest' tag has been updated then it will have a new associated image.
     latest_manifest_for_tag = image_list.get_manifest(@tag, true)
@@ -31,8 +29,7 @@ class DockerImageDeviceCheck
     if latest_manifest_for_tag.digest == @digest
       # We're still up to date. Try to find a better tag (version) if possible.
       # If there isn't an alternative then this will end up downloading all the tags, so set a limit.
-      alternate_manifest = get_manifest(image_list, @digest, {
-        :ignored_tags => ignored_tags,
+      alternate_manifest = get_display_manifest(image_list, @digest, {
         :fetch_limit => 30,
       })
       return formatted_info(
@@ -51,10 +48,8 @@ class DockerImageDeviceCheck
     # In addition, we'll check for an alternate tag for the remote image that we want to update
     # to. This means that rather than showing the new version/tag as 'latest', we can show it as
     # something like '1.0.3'.
-    alternate_local_image_tag = get_manifest(image_list, @digest)&.tag
-    alternate_remote_manifest = get_manifest(image_list, latest_manifest_for_tag.digest, {
-      :ignored_tags => ignored_tags,
-    })
+    alternate_local_image_tag = get_display_manifest(image_list, @digest)&.tag
+    alternate_remote_manifest = get_display_manifest(image_list, latest_manifest_for_tag.digest)
 
     return formatted_info(
       alternate_local_image_tag,
@@ -63,9 +58,9 @@ class DockerImageDeviceCheck
     )
   end
 
-  # Tags that indicate the latest stable release and not a particular version number.
-  def self.common_latest_tags
-    ['amd64-latest', 'latest', 'stable']
+  # Words in tags that don't provide any value as a version number.
+  def self.superfluous_keywords
+    ['amd64', 'latest', 'stable']
   end
 
   # Find an tag for a given image for which we already have a tag.
@@ -73,8 +68,7 @@ class DockerImageDeviceCheck
   # This method is best-effort. There may be multiple alternate manifests, but this will return
   # the first one it finds, which should be the most recent. This avoids needing to query the
   # server for the details about ever single tag in most cases.
-  private def get_manifest(image_list, digest, options = {})
-    ignored_tags = options[:ignored_tags] || []
+  private def get_display_manifest(image_list, digest, options = {})
     remaining_checks = options[:fetch_limit] || 10000
 
     # Iterate backward so that more recent tags are evaluated first.
@@ -93,8 +87,8 @@ class DockerImageDeviceCheck
       # Ignore tags for other images
       next unless manifest.digest == digest
 
-      # Ignore the existing manifest if we run across it in the list
-      next if ignored_tags.include?(manifest.tag)
+      # Ignore tags that aren't valuable, like 'latest'
+      next if trimmed_tag(manifest.tag).strip.empty?
 
       return manifest
     }
@@ -129,14 +123,27 @@ class DockerImageDeviceCheck
     info
   end
 
+  private def trimmed_tag(tag)
+    self.class.superfluous_keywords.each { |keyword|
+      pattern = /(?:^|[-_.])#{keyword}(?:$|[-_.])/
+      tag.gsub!(pattern, '')
+    }
+
+    # Remove a 'v'-prefix, like in 'v1.0.1'
+    tag = tag[1..-1] if tag.match(/^v\d/)
+
+    tag.strip
+  end
+
   private def formatted_version(tag, image_id)
     # Ignore common tags that we know aren't a version number
-    tag = nil if self.class.common_latest_tags.include?(tag)
+    tag = trimmed_tag(tag) if tag != nil
+    tag = nil if tag&.empty?
 
     # Remove the "sha256:" prefix if present, and truncate to just the first five characters of the SHA
     image_id.slice!('sha256:')
     image_id = image_id[0..5]
-    return "(#{image_id})" if tag.nil? || tag.strip.empty?
+    return "(#{image_id})" if tag == nil
     return "#{tag} (#{image_id})"
   end
 
