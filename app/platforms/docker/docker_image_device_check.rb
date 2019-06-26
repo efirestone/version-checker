@@ -40,25 +40,38 @@ class DockerImageDeviceCheck
     # In addition, we'll check for an alternate tag for the remote image that we want to update
     # to. This means that rather than showing the new version/tag as 'latest', we can show it as
     # something like '1.0.3'.
-    alternate_local_image_tag = nil
-    alternate_remote_manifest = nil
-
-    # Iterate backward so that more recent tags are evaluated first.
-    image_list.get_tags.reverse.each { |tag|
-      # Stop looking if we already found matches
-      next if alternate_local_image_tag != nil && alternate_remote_manifest != nil
-
-      manifest = image_list.get_manifest(tag)
-      next if manifest.nil?
-
-      alternate_local_image_tag = manifest.tag if manifest.digest == @digest
-
-      if alternate_remote_manifest.nil? && manifest.digest == latest_manifest_for_tag.digest && manifest.tag != latest_manifest_for_tag.tag
-        alternate_remote_manifest = manifest
-      end
-    }
+    alternate_local_image_tag = get_manifest(@digest, nil, image_list)&.tag
+    alternate_remote_manifest = get_manifest(latest_manifest_for_tag.digest, @tag, image_list)
 
     return formatted_info(alternate_local_image_tag, alternate_remote_manifest || latest_manifest_for_tag, start_time)
+  end
+
+  # Find an tag for a given image for which we already have a tag.
+  #
+  # This method is best-effort. There may be multiple alternate manifests, but this will return
+  # the first one it finds, which should be the most recent. This avoids needing to query the
+  # server for the details about ever single tag in most cases.
+  private def get_manifest(digest, ignored_tag, image_list)
+    # Iterate backward so that more recent tags are evaluated first.
+    image_list.get_tags.reverse.each { |tag|
+      manifest = image_list.get_manifest(tag)
+
+      # Try the next one if we failed to fetch a manifest for this tag
+      next if manifest == nil
+
+      # Ignore manifests that don't have a tag since that's what we need for versions
+      next if manifest.tag == nil
+
+      # Ignore tags for other images
+      next unless manifest.digest == digest
+
+      # Ignore the existing manifest if we run across it in the list
+      next if manifest.tag == ignored_tag
+
+      return manifest
+    }
+
+    nil
   end
 
   private def formatted_info(current_tag, latest_image_manifest, start_time)
