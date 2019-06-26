@@ -130,6 +130,9 @@ class DockerImageDeviceCheck
   end
 
   private def formatted_version(tag, image_id)
+    # Ignore common tags that we know aren't a version number
+    tag = nil if self.class.common_latest_tags.include?(tag)
+
     # Remove the "sha256:" prefix if present, and truncate to just the first five characters of the SHA
     image_id.slice!('sha256:')
     image_id = image_id[0..5]
