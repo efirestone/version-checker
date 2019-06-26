@@ -144,7 +144,7 @@ class DockerImageDeviceCheck
     image_id.slice!('sha256:')
     image_id = image_id[0..5]
     return "(#{image_id})" if tag == nil
-    return "#{tag} (#{image_id})"
+    return tag
   end
 
 end
