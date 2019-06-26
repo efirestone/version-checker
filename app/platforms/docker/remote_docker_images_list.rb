@@ -2,9 +2,32 @@ require 'fileutils'
 
 class RemoteDockerImagesList
 
+  class TagList
+
+    def initialize(images_list)
+      @index = 0
+      @images_list = images_list
+    end
+
+    def next
+      image = @images_list.tag_list_next_at(@index)
+      return nil if image == nil
+
+      @index += 1
+      image['name']
+    end
+
+  end
+
   def initialize(repository, cache_dir = "~/.cache/version_checker/docker_image_data/")
     @cache_dir = File.join(File.expand_path(cache_dir), 'manifests', repository)
     @repository = repository
+
+    # We'll use the Docker Hub website API rather than the docker.io registry /tags/list version
+    # because the registry version returns all the tags alphabetically ordered, and we really
+    # want a chronologically ordered version so that we can check newer images first.
+    # Check the git history for the older version.
+    @next_tag_uri = URI.parse("https://hub.docker.com/v2/repositories/#{@repository}/tags/")
   end
 
   # If force_download is true then skip checking the cache
@@ -24,6 +47,7 @@ class RemoteDockerImagesList
     end
 
     manifest_json = download_manifest(tag, "application/#{content_type}")
+
     return nil if manifest_json.nil?
 
     # For some images we get back the v1 manifest even when requesting the v2 one.
@@ -38,24 +62,8 @@ class RemoteDockerImagesList
     return DockerImageManifest.new(tag, manifest_json)
   end
 
-  def get_tags
-    return @tags unless @tags.nil?
-
-    @token ||= get_token
-
-    uri = URI.parse("https://registry-1.docker.io/v2/#{@repository}/tags/list")
-    request = Net::HTTP::Get.new(uri.request_uri)
-    request['Authorization'] = "Bearer #{@token}"
-
-    response = Net::HTTP.start(uri.host, uri.port,
-      :use_ssl => uri.scheme == 'https') do |https|
-      https.request(request)
-    end
-
-    json = JSON.parse(response.body)
-    @tags = json['tags']
-
-    @tags
+  def tag_list
+    TagList.new(self)
   end
 
   private def cache_manifest(manifest, reference, variant)
@@ -124,6 +132,51 @@ class RemoteDockerImagesList
     json = JSON.parse(response.body)
 
     json['token']
+  end
+
+  # Get the next tag in the array. Fetch new ones if necessary.
+  # For use by tag lists only
+  def tag_list_next_at(index)
+    @tags ||= []
+
+    if index < @tags.size
+      return @tags[index]
+    elsif @next_tag_uri == nil
+      # We're at the end of the list and there's nothing left to fetc
+      return nil
+    else
+      tag_list_fetch_next
+
+      # Try again
+      return tag_list_next_at(index)
+    end
+  end
+
+  # Fetch the next page of tags.
+  private def tag_list_fetch_next
+    uri = @next_tag_uri
+    request = Net::HTTP::Get.new(uri.request_uri)
+    request['content-type'] = 'application/json'
+
+    response = Net::HTTP.start(uri.host, uri.port,
+      :use_ssl => uri.scheme == 'https') do |https|
+      https.request(request)
+    end
+
+    raise "Failed to fetch tags for #{@repository}" unless response.code.to_i == 200
+
+    json = JSON.parse(response.body)
+
+    # Save the URI for the next page to fetch
+    next_uri = json['next']
+    if next_uri == nil
+      # Set a placeholder to indicate we've hit the end
+      @next_tag_uri = nil
+    else
+      @next_tag_uri = URI.parse(next_uri)
+    end
+
+    @tags += json['results']
   end
 
 end
