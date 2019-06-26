@@ -30,8 +30,10 @@ class DockerImageDeviceCheck
 
     if latest_manifest_for_tag.digest == @digest
       # We're still up to date. Try to find a better tag (version) if possible.
+      # If there isn't an alternative then this will end up downloading all the tags, so set a limit.
       alternate_manifest = get_manifest(image_list, @digest, {
         :ignored_tags => ignored_tags,
+        :fetch_limit => 30,
       })
       return formatted_info(
         alternate_manifest&.tag || @tag,
@@ -73,9 +75,13 @@ class DockerImageDeviceCheck
   # server for the details about ever single tag in most cases.
   private def get_manifest(image_list, digest, options = {})
     ignored_tags = options[:ignored_tags] || []
+    remaining_checks = options[:fetch_limit] || 10000
 
     # Iterate backward so that more recent tags are evaluated first.
     image_list.get_tags.reverse.each { |tag|
+      return nil if remaining_checks == 0
+      remaining_checks -= 1
+
       manifest = image_list.get_manifest(tag)
 
       # Try the next one if we failed to fetch a manifest for this tag
