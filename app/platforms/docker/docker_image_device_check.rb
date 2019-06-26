@@ -73,7 +73,6 @@ class DockerImageDeviceCheck
 
     tags = image_list.tag_list
     while tag = tags.next do
-      puts "Tag: #{tag}"
       return nil if remaining_checks == 0
       remaining_checks -= 1
 
