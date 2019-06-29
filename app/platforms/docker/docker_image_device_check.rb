@@ -20,7 +20,7 @@ class DockerImageDeviceCheck
 
     # To start, check if the image associated with the given tag is still the same.
     # If, for example, the 'latest' tag has been updated then it will have a new associated image.
-    latest_manifest_for_tag = image_list.get_manifest(@tag, true)
+    latest_manifest_for_tag = image_list.get_manifest(@tag, nil)
     if latest_manifest_for_tag.nil?
       # Failed to find any info about this image. It's likely not hosted in this Docker registry.
       return formatted_info(@tag, nil, start_time)
@@ -72,11 +72,14 @@ class DockerImageDeviceCheck
     remaining_checks = options[:fetch_limit] || 10000
 
     tags = image_list.tag_list
-    while tag = tags.next do
+    while tag_info = tags.next do
       return nil if remaining_checks == 0
       remaining_checks -= 1
 
-      manifest = image_list.get_manifest(tag)
+      tag = tag_info['name']
+      updated_at = tag_info['last_updated']
+
+      manifest = image_list.get_manifest(tag, updated_at)
 
       # Try the next one if we failed to fetch a manifest for this tag
       next if manifest == nil

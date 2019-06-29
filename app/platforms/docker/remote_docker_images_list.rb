@@ -14,7 +14,7 @@ class RemoteDockerImagesList
       return nil if image == nil
 
       @index += 1
-      image['name']
+      image
     end
 
   end
@@ -31,44 +31,56 @@ class RemoteDockerImagesList
   end
 
   # If force_download is true then skip checking the cache
-  def get_manifest(tag, force_download = false)
+  def get_manifest(tag, creation_date)
     raise "Cannot get manifest for empty reference" if tag.nil? || tag.empty?
 
     # We want the V2 content type. https://docs.docker.com/registry/spec/manifest-v2-2/
     content_type = 'vnd.docker.distribution.manifest.v2+json'
 
-    unless force_download
-      manifest_json = get_cached_manifest(tag, content_type)
+    if creation_date != nil
+      (success, manifest) = get_cached_manifest(tag, content_type, creation_date)
 
-      # Check for a "no entry exists" token, and if it does, don't try to download again.
-      return nil if manifest_json == 'noentry'
+      # Check for a "no entry exists to download" cache result, and if it does, don't try to download again.
+      return nil if success && manifest == nil
 
-      return DockerImageManifest.new(tag, manifest_json) unless manifest_json.nil?
+      return DockerImageManifest.new(tag, manifest) if success
     end
 
-    manifest_json = download_manifest(tag, "application/#{content_type}")
+    manifest = download_manifest(tag, "application/#{content_type}")
 
-    return nil if manifest_json.nil?
+    return nil if manifest == nil
 
     # For some images we get back the v1 manifest even when requesting the v2 one.
-    if JSON.parse(manifest_json)['schemaVersion'] != 2
+    if JSON.parse(manifest)['schemaVersion'] != 2
       # Mark this as an invalid entry so we don't try to re-download again in the future.
-      cache_manifest('noentry', tag, content_type)
+      cache_manifest(nil, tag, content_type, creation_date)
       return nil
     end
 
-    cache_manifest(manifest_json, tag, content_type)
+    if creation_date != nil
+      cache_manifest(manifest, tag, content_type, creation_date)
+    end
 
-    return DockerImageManifest.new(tag, manifest_json)
+    return DockerImageManifest.new(tag, manifest)
   end
 
   def tag_list
     TagList.new(self)
   end
 
-  private def cache_manifest(manifest, reference, variant)
+  private def cache_manifest(manifest, reference, variant, creation_date)
     # Keep an in-memory cache as well so we're not going to disk if we don't need to.
     @cache ||= {}
+
+    if manifest == nil
+      # Save a known non-existent entry.
+      manifest = ''
+    else
+      # Save the creation date too so we can tell when it goes stale
+      json = JSON.parse(manifest)
+      json['creation_date'] = creation_date
+      manifest = json.to_json
+    end
 
     @cache["#{reference}/#{variant}"] = manifest
 
@@ -80,17 +92,36 @@ class RemoteDockerImagesList
     File.write(path, manifest)
   end
 
-  private def get_cached_manifest(reference, variant)
+  # creation_date is the ISO8601 string representing the date that the tag was
+  # last updated. If the cached version is older then we'll clear the cached entry.
+  #
+  # Returns a tuple of (success, manifest)
+  private def get_cached_manifest(reference, variant, creation_date)
+    @cache ||= {}
+
     # Check the in-memory cache first
-    manifest = @cache["#{reference}/#{variant}"]
-    return manifest unless manifest == nil
+    key = "#{reference}/#{variant}"
+    manifest = @cache[key]
 
     # Then check the file system cache
     path = File.join(@cache_dir, reference, "#{variant}.json")
+    manifest = File.read(path) if manifest == nil && File.exist?(path)
 
-    return nil unless File.exist?(path)
+    return [false, nil] if manifest == nil
 
-    File.read(path)
+    # If we have a known non-existent then return success, but no entry.
+    return [true, nil] if manifest == ''
+
+    # Make sure the cached entry is up to date
+    json = JSON.parse(manifest)
+
+    return [true, manifest] if json['creation_date'] == creation_date
+
+    # This is an old entry, so clear it
+    @cache[key] = nil
+    FileUtils.rm(path)
+
+    [false, nil]
   end
 
   private def download_manifest(reference, accept_type)
@@ -106,7 +137,7 @@ class RemoteDockerImagesList
       https.request(request)
     end
 
-    if response.code != '200'
+    if response.code.to_i != 200
       puts "Failed to download manifest from #{uri.request_uri}"
       return nil
     end
