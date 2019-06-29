@@ -59,8 +59,14 @@ class DockerImageDeviceCheck
   end
 
   # Words in tags that don't provide any value as a version number.
+  # These are regexes, so they can model all or part of a tag to remove
   def self.superfluous_keywords
-    ['amd64', 'latest', 'stable']
+    [
+      /(?:^|[-_.])amd64(?:$|[-_.])/,
+      /(?:^|[-_.])latest(?:$|[-_.])/,
+      /(?:^|[-_.])stable(?:$|[-_.])/,
+      /^rc$/
+    ]
   end
 
   # Find an tag for a given image for which we already have a tag.
@@ -127,8 +133,7 @@ class DockerImageDeviceCheck
   end
 
   private def trimmed_tag(tag)
-    self.class.superfluous_keywords.each { |keyword|
-      pattern = /(?:^|[-_.])#{keyword}(?:$|[-_.])/
+    self.class.superfluous_keywords.each { |pattern|
       tag.gsub!(pattern, '')
     }
 
