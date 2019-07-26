@@ -53,7 +53,7 @@ class DockerPlatform < Platform
 
       info = DockerImageDeviceCheck.new(image).get_info
       image_topic = @device_config.topic.gsub('{{repository}}', repository)
-      unique_id = "docker_#{repository.gsub('/', '_')}"
+      unique_id = "docker_#{repository.gsub('/', '_')}_#{tag}"
 
       payload_factories << DeviceMqttPayloadFactory.new(image_topic, info, unique_id)
     end
