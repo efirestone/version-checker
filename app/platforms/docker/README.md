@@ -12,13 +12,13 @@ In addition to the standard `platform`, `host`, and `topic` parameters, the Dock
 
  - `monitored_repositories` - (Optional, default is all repositories) By default this platform will monitor and publish version check messages for all images currently known to `docker images`. To restrict the monitoring to a specific subset of those images the `monitored_repositories` array can be defined.
 
-The Docker platform publishes information for each image as a separate device, and as such needs a unique topic for each image. To achieve this the `topic` parameter should be specified as a template using the token `{{repository}}` representing the image repository's name, such as "gitlab/gitlab-ce".
+The Docker platform publishes information for each image as a separate device, and as such needs a unique topic for each image. To achieve this the `topic` parameter should be specified as a template using the token `{{repository}}` representing the image repository's name, such as "gitlab/gitlab-ce". It is recommended to also include the `{{tag}}` token (which will resolve to something like "latest"), which will allow multiple images from the same repository to exist with different tags.
 
 ```
 version_checks:
   - platform: docker
     host: docker.example.com
-    topic: "docker/{{repository}}"
+    topic: "docker/{{repository}}/{{tag}}"
     username: user_with_docker_permissions
     monitored_repositories:
       - gitlab/gitlab-ce

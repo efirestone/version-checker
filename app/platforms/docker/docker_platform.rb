@@ -52,7 +52,9 @@ class DockerPlatform < Platform
       next unless monitored_repositories.nil? || monitored_repositories.empty? || monitored_repositories.include?(repository)
 
       info = DockerImageDeviceCheck.new(image).get_info
-      image_topic = @device_config.topic.gsub('{{repository}}', repository)
+      image_topic = @device_config.topic
+        .gsub('{{repository}}', repository)
+        .gsub('{{tag}}', tag)
       unique_id = "docker_#{repository.gsub('/', '_')}_#{tag}"
 
       payload_factories << DeviceMqttPayloadFactory.new(image_topic, info, unique_id)
