@@ -129,6 +129,8 @@ class DeviceMqttPayloadFactory
       id ||= model || manufacturer
     end
 
+    raise "Failed to create unique ID for #{info[:manufacturer]}, #{info[:model]}" if id.nil? || id.empty?
+
     id
   end
 
