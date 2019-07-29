@@ -44,8 +44,8 @@ class DockerPlatform < Platform
 
     payload_factories = []
     images.each do |image|
-      repository = image[:repository]
-      tag = image[:tag]
+      repository = image[:repository].dup
+      tag = image[:tag].dup
       next if tag.nil? || tag.empty?
 
       # Ignore unmonitored repositories
