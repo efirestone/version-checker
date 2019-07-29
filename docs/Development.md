@@ -1,3 +1,11 @@
+## Running Locally
+
+To test your local changes:
+
+1. Create a local `./configuration.yaml` file with a configuration that runs your new changes. Do not check this file in.
+1. Run `ruby ./app/version_checker.rb ./configuration.yaml`.
+1. Use CTRL+C to stop running the program.
+
 ## Error Handling
 
 When doing a version check for a platform a failure to get the current version or the unique identifier of a device is considered fatal, while a failure to gather any other information is non-fatal.
