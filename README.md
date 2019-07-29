@@ -77,6 +77,20 @@ version_checks:
     topic: laundry_room/dryer
 ```
 
+## Debugging
+
+### Removing Old Entities
+
+Occasionally sensor entities will get duplicated in Home Assistant. Usually this is the result of changes to the sensors' unique identifiers, either because of a change in Version Checker (sorry, but sometimes it's required), or because you're testing out changes locally.
+
+To clean things up, you'll need to do a few steps:
+
+1. Stop any instances of Version Checker.
+1. In Home Assistant, go to Configuration -> Entity Registry. Remove all of the entities that are duplicated. Remove *both* versions of the duplicated sensor (or all if there are more than two).
+1. Stop Home Assistant. This is important, as otherwise it will overwrite the changes we're about to make in Step 3.
+1. In your Home Assistant config folder, edit `<config>/.storage/core.device_registry` to remove the Version Checker based entries. Save your changes.
+1. Restart Home Assistant and Version Checker.
+
 ## Q & A
 
 **Q**: Why build Version Checker as a separate system and not a Home Assistant component?
