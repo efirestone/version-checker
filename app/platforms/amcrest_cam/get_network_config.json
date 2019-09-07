@@ -1,0 +1,122 @@
+// Request to get the network config. POSTed to /RPC2
+
+{
+  "id": 383,
+  "method": "system.multicall",
+  "params": [
+    {
+      "id": 380,
+      "method": "configManager.getConfig",
+      "params": {
+        "name": "Network"
+      },
+      "session": "76e2c52dd98f9d231674380755189450"
+    },
+    {
+      "id": 381,
+      "method": "configManager.getConfig",
+      "params": {
+        "name": "IPv6"
+      },
+      "session": "76e2c52dd98f9d231674380755189450"
+    },
+    {
+      "id": 382,
+      "method": "configManager.getConfig",
+      "params": {
+        "name": "ARP&Ping"
+      },
+      "session": "76e2c52dd98f9d231674380755189450"
+    }
+  ],
+  "session": "76e2c52dd98f9d231674380755189450"
+}
+
+// Response
+
+{
+  "id": 383,
+  "params": [
+    {
+      "id": 380,
+      "params": {
+        "table": {
+          "DefaultInterface": "eth2",
+          "Domain": "dauha",
+          "Hostname": "amcrestcam2",
+          "eth0": {
+            "DefaultGateway": "10.1.1.1",
+            "DhcpEnable": true,
+            "DnsServers": [
+              "10.1.1.1",
+              "0.0.0.0"
+            ],
+            "EnableDhcpReservedIP": false,
+            "IPAddress": "10.1.1.129",
+            "MTU": 1500,
+            "PhysicalAddress": "9c:8e:cd:11:cc:95",
+            "SubnetMask": "255.255.255.0"
+          },
+          "eth2": {
+            "DefaultGateway": "10.1.40.1",
+            "DhcpEnable": false,
+            "DnsServers": [
+              "10.1.10.23",
+              "10.1.10.23"
+            ],
+            "EnableDhcpReservedIP": false,
+            "IPAddress": "10.1.40.83",
+            "MTU": 1500,
+            "PhysicalAddress": "9c:8e:cd:11:d8:bb",
+            "SubnetMask": "255.255.255.0"
+          }
+        }
+      },
+      "result": true
+    },
+    {
+      "id": 381,
+      "params": {
+        "table": {
+          "Enable": true,
+          "eth0": {
+            "DefaultGateway": "",
+            "DhcpEnable": false,
+            "DnsServerEnable": false,
+            "DnsServers": [
+              "2001:da8:2000:2017::33",
+              "2001:da8:2000:2193::33"
+            ],
+            "GlobalAddress": "2001:250:3000:3ca0:215:f2ff:fe5d:2301/64",
+            "LinkLocalAddress": "fe80::9e8e:cdff:fe11:cc95/64"
+          },
+          "eth2": {
+            "DefaultGateway": "",
+            "DhcpEnable": false,
+            "DnsServerEnable": false,
+            "DnsServers": [
+              "2001:da8:2000:2017::33",
+              "2001:da8:2000:2193::33"
+            ],
+            "GlobalAddress": "2001:250:3000:3ca0:215:f2ff:fe5d:2302/64",
+            "IPAddress": "",
+            "LinkLocalAddress": "fe80::9e8e:cdff:fe11:d8bb/64",
+            "Prefix": 1
+          }
+        }
+      },
+      "result": true
+    },
+    {
+      "id": 382,
+      "params": {
+        "table": {
+          "SettingIP": true
+        }
+      },
+      "result": true
+    }
+  ],
+  "result": true,
+  "session": "76e2c52dd98f9d231674380755189450"
+}

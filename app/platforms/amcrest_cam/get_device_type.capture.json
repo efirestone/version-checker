@@ -1,0 +1,7 @@
+// Request to get device type. POSTed to /RPC2
+
+{"method":"magicBox.getDeviceType","params":null,"id":2322,"session":46232057}
+
+// Response
+
+{"id":2322,"params":{"type":"IP2M-841W"},"result":true,"session":46232057}
