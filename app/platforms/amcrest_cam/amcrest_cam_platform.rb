@@ -286,7 +286,7 @@ class AmcrestCamPlatform < Platform
         if c.ord <= 127
           ascii << c.ord
         else
-          URI.escape(c)[1..].split('%').each { |c2| 
+          URI.escape(c)[1..-1].split('%').each { |c2|
             ascii << c2.to_i(16)
           }
         end
