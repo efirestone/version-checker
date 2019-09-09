@@ -91,7 +91,6 @@ class AmcrestCamPlatform < Platform
     # Figure out the legacy versions
     firmware_versions = []
     page.css('tr').each { |row|
-      # puts "Span: #{row.css('span.frmwr-badge')}"
       next unless span = row.css('span.frmwr-badge')[0]
 
       columns = row.css('td')
@@ -106,9 +105,9 @@ class AmcrestCamPlatform < Platform
       next if ignored_versions.include?(version_text.downcase)
 
       ignored_version_words.each { |w| version_text.gsub!(w, '') }
-      version = version_text.strip #split(/\s[\s-]*/)[0].strip
+      version = version_text.strip
 
-      models = summary.split(/\s|\<br\/?\>/).filter { |w|
+      models = summary.split(/\,?\s|\<br\/?\>/).filter { |w|
         next false if ignored_model_words.include?(w.downcase)
         next false if w.length < 3
         next true
@@ -157,9 +156,9 @@ class AmcrestCamPlatform < Platform
       ["AMDV108116", "AMDV108116"] => 'V3.200.AC04.5',
       ["AMDV108116-S3", "AMDV108116-S3"] => 'V3.210.AC01.4',
       ["IPM-723", "IPM-723B", "IPM-723W"] => 'V2.400.AC02.15.R',
-      ["IP2M-841E", "IP2M-841EB,", "IP2M-841ES", "IP2M-841EW"] => 'V2.620.00AC003.3.R',
+      ["IP2M-841E", "IP2M-841EB", "IP2M-841ES", "IP2M-841EW"] => 'V2.620.00AC003.3.R',
       ["IP2M-853E", "IP2M-853EW"] => 'V2.422.AC02.0.R',
-      ["IP2M-841", "IP2M-841B,", "IP2M-841S", "IP2M-841W"] => 'V2.420.AC00.18.R',
+      ["IP2M-841", "IP2M-841B", "IP2M-841S", "IP2M-841W"] => 'V2.420.AC00.18.R',
       ["IP2M-841 International"] => 'V2.420.AC00.17.R',
       ["IP2M-851", "IP2M-851B", "IP2M-851W"] => 'V2.420.AC01.3.R',
       ["IP2M-851E", "IP2M-851EB", "IP2M-851EW"] => 'V2.420.AC01.3.R',
@@ -169,7 +168,7 @@ class AmcrestCamPlatform < Platform
       ["IP2M-856E", "IP2M-856EW"] => 'V2.460.AC01.0.R',
       ["IP2M-858", "IP2M-858W"] => 'V2.422.AC02.0.R',
       ["IP2M-PH822B", "IP2M-PH822B"] => 'V2.622.00AC000.0.R',
-      ["IP3M-941", "IP3M-941B,", "IP3M-941S", "IP3M-941W"] => 'V2.620.00AC003.3.R',
+      ["IP3M-941", "IP3M-941B", "IP3M-941S", "IP3M-941W"] => 'V2.620.00AC003.3.R',
       ["IP3M-943", "IP3M-943B", "IP3M-943W"] => 'V2.400.AC02.15.R',
       ["IP3M-943 International"] => 'V2.400.AC00.26.R',
       ["IP3M-954E", "IP3M-954EB", "IP3M-954EW"] => 'V2.400.0002.15.R',
@@ -221,7 +220,7 @@ class AmcrestCamPlatform < Platform
       ["ATC-1201", "ATC-1201"] => '1.0',
       ["ATC-801", "ATC-801"] => 'DV 3.3.016',
       ["ATC-1202W", "ATC-1202W"] => 'UN 3.6.05',
-      ["IPM-721", "IPM-721B,", "IPM-721S", "IPM-721W"] => 'V2.420.AC00.18.R',
+      ["IPM-721", "IPM-721B", "IPM-721S", "IPM-721W"] => 'V2.420.AC00.18.R',
       ["IPM-721E", "IPM-721EB", "IPM-721ES"] => 'V2.420.AC00.17.R',
       ["IPM-721 International"] => 'V2.420.AC00.17.R',
       ["IPM-722", "IPM-722B", "IPM-722S"] => 'V2.210.0000.6.R',
