@@ -1,3 +1,4 @@
+require "digest/md5"
 require 'net/http'
 require 'nokogiri'
 require 'time'
@@ -30,6 +31,7 @@ class AmcrestCamPlatform < Platform
   def initialize(device_config, global_config)
     @device_config = device_config
     @global_config = global_config
+    @next_id = 1
   end
 
   def self.name
@@ -45,22 +47,68 @@ class AmcrestCamPlatform < Platform
   end
 
   private def get_info
-    # TODO: Get the current version, model name, and network info
-
     available_versions = fetch_available_versions
+
+    get_session
+
+    current_version = get_version
+    model = get_hardware_model
+    network_config = get_network_config
+    network_interface = network_config['eth0'] || network_config['eth1'] || network_config['eth2']
+    latest_version = available_versions[model]
 
     {
       :manufacturer => 'Amcrest',
-      # :model => '',
-      # :current_version => '',
-      # :latest_version => '',
+      :model => model,
+      :current_version => current_version,
+      :latest_version => latest_version,
       :latest_version_checked_at => Time.now.utc.iso8601,
-      # :ipv4_address => '',
-      # :mac_address => '',
+      :ipv4_address => network_interface['IPAddress'],
+      :mac_address => network_interface['PhysicalAddress'],
     }.compact
   end
 
+  private def fetch_params(params)
+    request_body = {
+      'method' => 'system.multicall',
+      'params' => [],
+      'session' => @session,
+    }
+
+    ids_to_param_names = {}
+    params_to_fetch = []
+    params.each { |p|
+      params_to_fetch << {
+        'id' => @next_id,
+        'method' => 'magicBox.getProductDefinition',
+        'params' => { 'name' => p },
+        'session' => @session
+      }
+      ids_to_param_names[@next_id] = p
+      @next_id += 1
+    }
+
+    request_body['params'] = params_to_fetch
+
+    request_body['id'] = @next_id
+    @next_id += 1
+
+    response = send_request('/RPC2', request_body)
+
+    response_body = JSON.parse(response.body)
+
+    # Map to a more readable hash using the requested keys
+    result = {}
+    response_body['params'].each { |p|
+      id = p['id']
+      result[ids_to_param_names[id]] = p['params']['definition']
+    }
+
+    result
+  end
+
   # Fetch the versions which are currently available for download.
+  # This will include the latest update to previous major versions.
   private def fetch_available_versions
 
     uri = URI.parse("https://amcrest.com/firmwaredownloads")
@@ -140,6 +188,169 @@ class AmcrestCamPlatform < Platform
     firmware_versions.compact.to_h
   end
 
+  private def send_request(path, body)
+    uri = URI.parse(@device_config.host + path)
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request['cookie'] = "DHLangCookie30=English; username=#{@device_config.username}; DHVideoWHMode=Adaptive%20Window; DhWebClientSessionID=#{@session}"
+
+    request.body = body.to_json
+
+    response = Net::HTTP.start(uri.host, uri.port,
+      :use_ssl => uri.scheme == 'https',
+      :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |https|
+      https.request(request)
+    end
+
+    response
+  end
+
+  # Session Methods
+
+  private def get_session
+    uri = URI.parse(@device_config.host + "/RPC2_Login")
+
+    request = Net::HTTP::Post.new(uri.request_uri)
+
+    request_body = {
+      'method' => 'global.login',
+      'params' => {
+        'userName' => @device_config.username,
+        'password' => '',
+        'clientType' => 'Web3.0',
+        'loginType' => 'Direct',
+      },
+      'id' => @next_id
+    }
+    @next_id += 1
+
+    request['cookie'] = "DHLangCookie30=English; username=#{@device_config.username}; DHVideoWHMode=Adaptive%20Window"
+    request.body = request_body.to_json
+
+    response = Net::HTTP.start(uri.host, uri.port,
+      :use_ssl => uri.scheme == 'https',
+      :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |https|
+      https.request(request)
+    end
+
+    # Try again with the new session ID
+
+    response_json = JSON.parse(response.body)
+    session_id = response_json['session']
+
+    authority_type = response_json['params']['encryption']
+    encoded_password = encode_password(response_json['params'])
+
+    request2 = Net::HTTP::Post.new(uri.request_uri)
+    request2['cookie'] = "DHLangCookie30=English; username=#{@device_config.username}; DHVideoWHMode=Adaptive%20Window; DhWebClientSessionID=#{session_id}"
+
+    request_body2 = {
+      'method' => 'global.login',
+      'params' => {
+        'userName' => @device_config.username,
+        'password' => encoded_password,
+        'clientType' => 'Web3.0',
+        'loginType' => 'Direct',
+        'authorityType' => authority_type,
+      },
+      'id' => @next_id,
+      'session' => session_id
+    }
+    @next_id += 1
+
+    request2.body = request_body2.to_json
+
+    response2 = Net::HTTP.start(uri.host, uri.port,
+      :use_ssl => uri.scheme == 'https',
+      :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |https|
+      https.request(request2)
+    end
+
+    raise "Camera login failed" unless JSON.parse(response2.body)['result']
+
+    @session = session_id#.to_i
+  end
+
+  private def encode_password(params)
+    username = @device_config.username
+    password = @device_config.password
+    md5(username + ":" + params['random'] + ":" + md5(username + ":" + params['realm'] + ":" + password))
+  end
+
+  private def md5(a)
+    def prepare(b)
+      ascii = []
+      chars = b.split('')
+
+      # Copy the way the Amcrest login screen filters out high-ascii characters
+      chars.map { |c| 
+        if c.ord <= 127
+          ascii << c.ord
+        else
+          URI.escape(c)[1..].split('%').each { |c2| 
+            ascii << c2.to_i(16)
+          }
+        end
+      }
+
+      ascii.pack('C*')
+    end
+
+    Digest::MD5.hexdigest(prepare(a)).upcase    
+  end
+
+  # Data Fetching
+
+  private def get_version
+    values = fetch_params(['MajorVersion', 'MinorVersion', 'OEMVersion', 'VendorAbbr', 'Revision', 'TypeVersion', 'BuildDate'])
+
+    # Format into something like V2.520.AC00.18.R
+    if values['VendorAbbr'].length > 0
+      # Older versions included the "AC" in the 'VendorAbbr'. Newer versions include it as part of 'OEMVersion'
+      "V#{values['MajorVersion']}.#{values['MinorVersion']}.#{values['VendorAbbr']}%02d.#{values['Revision']}.#{values['TypeVersion']}" % values['OEMVersion']
+    else
+      "V#{values['MajorVersion']}.#{values['MinorVersion']}.#{values['OEMVersion']}.#{values['Revision']}.#{values['TypeVersion']}"
+    end
+  end
+
+  private def get_hardware_model
+    request_body = {
+      'id' => @next_id,
+      'method' => 'magicBox.getDeviceType',
+      'params' => nil,
+      'session' => @session,
+    }
+    @next_id += 1
+
+    response = send_request('/RPC2', request_body)
+
+    response_body = JSON.parse(response.body)
+    response_body['params']['type']
+  end
+
+  private def get_network_config
+    request_body = {
+      'id' => @next_id,
+      'method' => 'system.multicall',
+      'params' => nil,
+      'session' => @session,
+    }
+    @next_id += 1
+
+    request_body['params'] = [{
+      'id' => @next_id,
+      'method' => 'configManager.getConfig',
+      'params' => { 'name' => 'Network' },
+      'session' => @session,
+    }]
+    @next_id += 1
+
+    response = send_request('/RPC2', request_body)
+
+    response_body = JSON.parse(response.body)
+
+    response_body['params'][0]['params']['table']
+  end
+
   # Debugging Methods
 
   # The expected models as parsed on 2019-09-07. These will likely need to be updated periodically.
@@ -156,10 +367,10 @@ class AmcrestCamPlatform < Platform
       ["AMDV108116", "AMDV108116"] => 'V3.200.AC04.5',
       ["AMDV108116-S3", "AMDV108116-S3"] => 'V3.210.AC01.4',
       ["IPM-723", "IPM-723B", "IPM-723W"] => 'V2.400.AC02.15.R',
-      ["IP2M-841E", "IP2M-841EB", "IP2M-841ES", "IP2M-841EW"] => 'V2.620.00AC003.3.R',
-      ["IP2M-853E", "IP2M-853EW"] => 'V2.422.AC02.0.R',
       ["IP2M-841", "IP2M-841B", "IP2M-841S", "IP2M-841W"] => 'V2.420.AC00.18.R',
       ["IP2M-841 International"] => 'V2.420.AC00.17.R',
+      ["IP2M-841E", "IP2M-841EB", "IP2M-841ES", "IP2M-841EW"] => 'V2.620.00AC003.3.R',
+      ["IP2M-853E", "IP2M-853EW"] => 'V2.422.AC02.0.R',
       ["IP2M-851", "IP2M-851B", "IP2M-851W"] => 'V2.420.AC01.3.R',
       ["IP2M-851E", "IP2M-851EB", "IP2M-851EW"] => 'V2.420.AC01.3.R',
       ["IP2M-852", "IP2M-852B", "IP2M-852W"] => 'V2.420.AC01.3.R',

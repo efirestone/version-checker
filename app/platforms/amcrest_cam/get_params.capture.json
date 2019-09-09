@@ -1,0 +1,1158 @@
+// Request POSTed to /RPC2
+
+{
+  "id": 69,
+  "method": "system.multicall",
+  "params": [
+    {
+      "id": 8,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "HasPtz"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 9,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "IsPtzAlarm"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 10,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "VSP"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 11,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "MaxExtraStream"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 12,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "CameraSwitchComV"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 13,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "IsLocalStore"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 14,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "IEEE802_1X"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 15,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "VPN"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 16,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "SupportedWPS"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 17,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "CameraAttribute"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 18,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "PtzFunctionMenu"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 19,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "LightingControl"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 20,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "RainBrushControl"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 21,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "CifPFrameSize"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 22,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "AudioFileManager"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 23,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "AudioProperties"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 24,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "WirelessAlarm"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 25,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "GB28181"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 26,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "VolumeDetect"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 27,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "AnomalyDetect"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 28,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "MutationDetect"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 29,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "MajorVersion"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 30,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "MinorVersion"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 31,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "VendorAbbr"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 32,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "OEMVersion"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 33,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "Revision"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 34,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "TypeVersion"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 35,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "BuildDate"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 36,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "WebVersion"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 37,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "MaxPreRecordTime"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 38,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "PTZFunctionViaApp"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 39,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "IntelliTracker"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 40,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "VSPs"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 41,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "FontColour"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 42,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "FontBorder"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 43,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "FontSize"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 44,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "QueryDatabase"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 45,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "PtzManualMotionDetect"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 46,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "VideoAnalyse"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 47,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "VideoStandards"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 48,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "Languages"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 49,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "SnapshotInterval"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 50,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "IsGpsInfoOsd"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 51,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "PtzOperationStatus"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 52,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "Focus"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 53,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "Iris"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 54,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "RotateResolutionLimit"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 55,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "EncodingResolutionLimit"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 56,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "SpecVer"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 57,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "LensControl"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 58,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "LensControlMix"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 59,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "smallPtz"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 60,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "FireWarning"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 61,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "TemperatureDifference"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 62,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "PresetFocusROI"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 63,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "IntelligentFocus"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 64,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "Industry"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 65,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "SteadyLightControl"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 66,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "CSCMatrixSwitch"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 67,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "AudioTalkMode"
+      },
+      "session": 46232057
+    },
+    {
+      "id": 68,
+      "method": "magicBox.getProductDefinition",
+      "params": {
+        "name": "LightGlobal"
+      },
+      "session": 46232057
+    }
+  ],
+  "session": 46232057
+}
+
+// Response
+
+{
+  "id": 69,
+  "params": [
+    {
+      "id": 8,
+      "params": {
+        "definition": true
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 9,
+      "params": {
+        "definition": true
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 10,
+      "params": {
+        "definition": "AMCREST"
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 11,
+      "params": {
+        "definition": 1
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 12,
+      "params": {
+        "definition": "V3"
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 13,
+      "params": {
+        "definition": true
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 14,
+      "params": {
+        "definition": true
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 15,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "id": 16,
+      "params": {
+        "definition": false
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 17,
+      "params": {
+        "definition": {
+          "LinkRule": "/usr/data/AttributeRule/LinkRule",
+          "RuleTranslate": "/usr/data/AttributeRule/RuleTranslate",
+          "Support": true
+        }
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 18,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 19,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 20,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "id": 21,
+      "params": {
+        "definition": [
+          2,
+          40
+        ]
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 22,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "id": 23,
+      "params": {
+        "definition": {
+          "Support": true
+        }
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 24,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 25,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "id": 26,
+      "params": {
+        "definition": true
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 27,
+      "params": {
+        "definition": true
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 28,
+      "params": {
+        "definition": true
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 29,
+      "params": {
+        "definition": 2
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 30,
+      "params": {
+        "definition": 520
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 31,
+      "params": {
+        "definition": "AC"
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 32,
+      "params": {
+        "definition": 0
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 33,
+      "params": {
+        "definition": 18
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 34,
+      "params": {
+        "definition": "R"
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 35,
+      "params": {
+        "definition": "2017-06-29"
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 36,
+      "params": {
+        "definition": "3.2.1.453504"
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 37,
+      "params": {
+        "definition": 5
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 38,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 39,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 40,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 41,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 42,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 43,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 44,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 45,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 46,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "id": 47,
+      "params": {
+        "definition": [
+          "NTSC"
+        ]
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 48,
+      "params": {
+        "definition": [
+          "English"
+        ]
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 49,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 50,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 51,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 52,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 53,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "id": 54,
+      "params": {
+        "definition": [
+          "1080P",
+          "720P",
+          "VGA"
+        ]
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 55,
+      "params": {
+        "definition": [
+          [
+            "1080P",
+            "720P",
+            "VGA"
+          ],
+          [
+            "VGA"
+          ],
+          [
+            "VGA"
+          ],
+          null,
+          [
+            "1080P",
+            "720P",
+            "VGA"
+          ]
+        ]
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 56,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 57,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 58,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 59,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 60,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 61,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 62,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 63,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "id": 64,
+      "params": {
+        "definition": "None"
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 65,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 66,
+      "params": {
+        "definition": null
+      },
+      "result": false,
+      "session": 46232057
+    },
+    {
+      "id": 67,
+      "params": {
+        "definition": [
+          "Half"
+        ]
+      },
+      "result": true,
+      "session": 46232057
+    },
+    {
+      "id": 68,
+      "params": {
+        "definition": {
+          "Support": true
+        }
+      },
+      "result": true,
+      "session": 46232057
+    }
+  ],
+  "result": true,
+  "session": 46232057
+}
