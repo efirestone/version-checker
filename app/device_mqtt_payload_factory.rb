@@ -1,6 +1,8 @@
 class DeviceMqttPayloadFactory
 
   def initialize(topic, state_info, id = nil)
+    raise "State info cannot be nil" if state_info == nil
+
     @id = id || get_unique_id(state_info)
     @topic = topic
     @state_info = state_info

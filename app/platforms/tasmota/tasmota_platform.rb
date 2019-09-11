@@ -55,9 +55,9 @@ class TasmotaPlatform < Platform
         :use_ssl => uri.scheme == 'https') do |https|
         https.request(request)
       end
-    rescue
+    rescue => exception
       # Failed to connect to the device.
-      return nil
+      raise_current_version_check_error("Failed to connect to device: #{exception}")
     end
 
     page = Nokogiri::HTML(response.body)
