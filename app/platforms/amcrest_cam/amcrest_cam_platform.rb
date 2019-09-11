@@ -101,7 +101,7 @@ class AmcrestCamPlatform < Platform
     result = {}
     response_body['params'].each { |p|
       id = p['id']
-      result[ids_to_param_names[id]] = p['params']['definition']
+      result[ids_to_param_names[id]] = p['params']['definition'] || p['params']['table']
     }
 
     result
@@ -331,27 +331,8 @@ class AmcrestCamPlatform < Platform
   end
 
   private def get_network_config
-    request_body = {
-      'id' => @next_id,
-      'method' => 'system.multicall',
-      'params' => nil,
-      'session' => @session,
-    }
-    @next_id += 1
-
-    request_body['params'] = [{
-      'id' => @next_id,
-      'method' => 'configManager.getConfig',
-      'params' => { 'name' => 'Network' },
-      'session' => @session,
-    }]
-    @next_id += 1
-
-    response = send_request('/RPC2', request_body)
-
-    response_body = JSON.parse(response.body)
-
-    response_body['params'][0]['params']['table']
+    params = fetch_params('configManager.getConfig', ['Network'])
+    return params['Network']
   end
 
   # Debugging Methods
