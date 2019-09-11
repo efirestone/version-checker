@@ -68,7 +68,7 @@ class AmcrestCamPlatform < Platform
     }.compact
   end
 
-  private def fetch_params(params)
+  private def fetch_params(method, params)
     request_body = {
       'method' => 'system.multicall',
       'params' => [],
@@ -80,7 +80,7 @@ class AmcrestCamPlatform < Platform
     params.each { |p|
       params_to_fetch << {
         'id' => @next_id,
-        'method' => 'magicBox.getProductDefinition',
+        'method' => method,
         'params' => { 'name' => p },
         'session' => @session
       }
@@ -301,7 +301,10 @@ class AmcrestCamPlatform < Platform
   # Data Fetching
 
   private def get_version
-    values = fetch_params(['MajorVersion', 'MinorVersion', 'OEMVersion', 'VendorAbbr', 'Revision', 'TypeVersion', 'BuildDate'])
+    values = fetch_params(
+      'magicBox.getProductDefinition',
+      ['MajorVersion', 'MinorVersion', 'OEMVersion', 'VendorAbbr', 'Revision', 'TypeVersion', 'BuildDate']
+    )
 
     # Format into something like V2.520.AC00.18.R
     if values['VendorAbbr'].length > 0
