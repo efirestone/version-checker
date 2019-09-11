@@ -14,7 +14,7 @@ def read_config(path)
   begin
     return Config.new(path, @platform_manager)
   rescue => exception
-    puts "Configuration error:\n   #{exception}"
+    puts "Configuration error:\n   #{exception}   #{exception.backtrace.join("\n   ")}"
   end
 
   nil

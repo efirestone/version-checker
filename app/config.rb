@@ -70,7 +70,7 @@ class Config
     config = YAML.load_file(file_path)
 
     @check_interval = self.class.default_check_interval
-    if config_section = config['config'] && value = config_section['check_interval']
+    if value = config.dig('config', 'check_interval')
       value = value.to_i
       raise "Check interval cannot be zero" if value == 0
       raise "Check interval cannot be negative" if value < 0
