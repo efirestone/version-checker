@@ -55,6 +55,7 @@ class AmcrestCamPlatform < Platform
     model = get_hardware_model
     network_config = get_network_config
     network_interface = network_config['eth0'] || network_config['eth1'] || network_config['eth2']
+    name = get_general_config['MachineName']
     latest_version = available_versions[model]
 
     {
@@ -65,6 +66,7 @@ class AmcrestCamPlatform < Platform
       :latest_version_checked_at => Time.now.utc.iso8601,
       :ipv4_address => network_interface['IPAddress'],
       :mac_address => network_interface['PhysicalAddress'],
+      :name => name,
     }.compact
   end
 
@@ -328,6 +330,11 @@ class AmcrestCamPlatform < Platform
 
     response_body = JSON.parse(response.body)
     response_body['params']['type']
+  end
+
+  private def get_general_config
+    params = fetch_params('configManager.getConfig', ['General'])
+    return params['General']
   end
 
   private def get_network_config

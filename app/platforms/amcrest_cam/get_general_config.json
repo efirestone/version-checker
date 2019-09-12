@@ -1,0 +1,109 @@
+// Request to get the general config. POSTed to /RPC2
+
+{
+  "id": 422,
+  "method": "system.multicall",
+  "params": [
+    {
+      "id": 417,
+      "method": "configManager.getConfig",
+      "params": {
+        "name": "General"
+      },
+      "session": "999517155de64f3830b26a87c6be6172"
+    },
+    {
+      "id": 418,
+      "method": "configManager.getConfig",
+      "params": {
+        "name": "Language"
+      },
+      "session": "999517155de64f3830b26a87c6be6172"
+    },
+    {
+      "id": 419,
+      "method": "configManager.getConfig",
+      "params": {
+        "name": "VideoStandard"
+      },
+      "session": "999517155de64f3830b26a87c6be6172"
+    },
+    {
+      "id": 420,
+      "method": "configManager.getConfig",
+      "params": {
+        "name": "VideoOut"
+      },
+      "session": "999517155de64f3830b26a87c6be6172"
+    },
+    {
+      "id": 421,
+      "method": "configManager.getConfig",
+      "params": {
+        "name": "LightGlobal"
+      },
+      "session": "999517155de64f3830b26a87c6be6172"
+    }
+  ],
+  "session": "999517155de64f3830b26a87c6be6172"
+}
+
+// Response
+
+{
+  "id": 422,
+  "params": [
+    {
+      "id": 417,
+      "params": {
+        "table": {
+          "LocalNo": 8,
+          "LockLoginEnable": true,
+          "LockLoginTimes": 30,
+          "LoginFailLockTime": 300,
+          "MachineName": "AMC00001_4C0A1F",
+          "MaxOnlineTime": 3600
+        }
+      },
+      "result": true
+    },
+    {
+      "id": 418,
+      "params": {
+        "table": "English"
+      },
+      "result": true
+    },
+    {
+      "id": 419,
+      "params": {
+        "table": "NTSC"
+      },
+      "result": true
+    },
+    {
+      "error": {
+        "code": 268959743,
+        "message": "Unknown error! error code was not set in service!"
+      },
+      "id": 420,
+      "params": {
+        "table": null
+      },
+      "result": false
+    },
+    {
+      "id": 421,
+      "params": {
+        "table": [
+          {
+            "Enable": true
+          }
+        ]
+      },
+      "result": true
+    }
+  ],
+  "result": true,
+  "session": "999517155de64f3830b26a87c6be6172"
+}
