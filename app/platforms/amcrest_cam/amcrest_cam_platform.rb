@@ -55,7 +55,7 @@ class AmcrestCamPlatform < Platform
     model = get_hardware_model
     network_config = get_network_config
     network_interface = network_config['eth0'] || network_config['eth1'] || network_config['eth2']
-    name = get_general_config['MachineName']
+    name = get_device_name(model)
     latest_version = available_versions[model]
 
     {
@@ -330,6 +330,27 @@ class AmcrestCamPlatform < Platform
 
     response_body = JSON.parse(response.body)
     response_body['params']['type']
+  end
+
+  private def get_device_name(model)
+    params = get_general_config
+    name = get_general_config['MachineName']
+
+    if name == nil || name.empty?
+      name = "Amcrest #{model}"
+    end
+
+    # The name doesn't allow spaces, so assume that underscores should be spaces
+    name.gsub!('_', ' ')
+
+    # The name is likely either the default (some semi-random numbers and letters)
+    # or the name of the area where the camera is located.
+    # The version checker expects the device's name though, so tack on " Camera"
+    if !name.downcase.end_with?(' camera')
+      name += " Camera"
+    end
+
+    name
   end
 
   private def get_general_config
