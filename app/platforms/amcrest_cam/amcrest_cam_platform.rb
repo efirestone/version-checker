@@ -159,7 +159,7 @@ class AmcrestCamPlatform < Platform
       ignored_version_words.each { |w| version_text.gsub!(w, '') }
       version = version_text.strip
 
-      models = summary.split(/\,?\s|\<br\/?\>/).filter { |w|
+      models = summary.split(/\,?\s|\<br\/?\>/).select { |w|
         next false if ignored_model_words.include?(w.downcase)
         next false if w.length < 3
         next true
