@@ -55,6 +55,7 @@ class AmcrestCamPlatform < Platform
     model = get_hardware_model
     network_config = get_network_config
     network_interface = network_config['eth0'] || network_config['eth1'] || network_config['eth2']
+    name = get_general_config['MachineName']
     latest_version = available_versions[model]
 
     {
@@ -65,10 +66,11 @@ class AmcrestCamPlatform < Platform
       :latest_version_checked_at => Time.now.utc.iso8601,
       :ipv4_address => network_interface['IPAddress'],
       :mac_address => network_interface['PhysicalAddress'],
+      :name => name,
     }.compact
   end
 
-  private def fetch_params(params)
+  private def fetch_params(method, params)
     request_body = {
       'method' => 'system.multicall',
       'params' => [],
@@ -80,7 +82,7 @@ class AmcrestCamPlatform < Platform
     params.each { |p|
       params_to_fetch << {
         'id' => @next_id,
-        'method' => 'magicBox.getProductDefinition',
+        'method' => method,
         'params' => { 'name' => p },
         'session' => @session
       }
@@ -101,7 +103,7 @@ class AmcrestCamPlatform < Platform
     result = {}
     response_body['params'].each { |p|
       id = p['id']
-      result[ids_to_param_names[id]] = p['params']['definition']
+      result[ids_to_param_names[id]] = p['params']['definition'] || p['params']['table']
     }
 
     result
@@ -301,7 +303,10 @@ class AmcrestCamPlatform < Platform
   # Data Fetching
 
   private def get_version
-    values = fetch_params(['MajorVersion', 'MinorVersion', 'OEMVersion', 'VendorAbbr', 'Revision', 'TypeVersion', 'BuildDate'])
+    values = fetch_params(
+      'magicBox.getProductDefinition',
+      ['MajorVersion', 'MinorVersion', 'OEMVersion', 'VendorAbbr', 'Revision', 'TypeVersion', 'BuildDate']
+    )
 
     # Format into something like V2.520.AC00.18.R
     if values['VendorAbbr'].length > 0
@@ -327,28 +332,14 @@ class AmcrestCamPlatform < Platform
     response_body['params']['type']
   end
 
+  private def get_general_config
+    params = fetch_params('configManager.getConfig', ['General'])
+    return params['General']
+  end
+
   private def get_network_config
-    request_body = {
-      'id' => @next_id,
-      'method' => 'system.multicall',
-      'params' => nil,
-      'session' => @session,
-    }
-    @next_id += 1
-
-    request_body['params'] = [{
-      'id' => @next_id,
-      'method' => 'configManager.getConfig',
-      'params' => { 'name' => 'Network' },
-      'session' => @session,
-    }]
-    @next_id += 1
-
-    response = send_request('/RPC2', request_body)
-
-    response_body = JSON.parse(response.body)
-
-    response_body['params'][0]['params']['table']
+    params = fetch_params('configManager.getConfig', ['Network'])
+    return params['Network']
   end
 
   # Debugging Methods
