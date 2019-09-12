@@ -114,11 +114,13 @@ class DockerImageDeviceCheck
       model = repository_parts[1..-1].join('/')
     end
 
+    name = "#{@repository} Docker Image"
+
     info = {
       :booted_at => @local_image[:booted_at].utc.iso8601,
       :current_version => formatted_version(current_tag, @digest),
       :manufacturer => manufacturer,
-      :name => @repository,
+      :name => name,
       :model => model,
       :host_name => @local_image[:host_name],
       :ipv4_address => @local_image[:ipv4_address],

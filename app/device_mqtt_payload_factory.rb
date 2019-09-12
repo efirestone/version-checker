@@ -137,7 +137,18 @@ class DeviceMqttPayloadFactory
   end
 
   private def sensor_name_prefix
-    @state_info[:name] || @state_info[:model]
+    prefix = @state_info[:name]
+
+    manufacturer = @state_info[:manufacturer]
+    model = @state_info[:model]
+
+    if manufacturer != nil && model != nil
+      prefix ||= "#{manufacturer}_#{model}"
+    else
+      prefix ||= model
+    end
+
+    prefix
   end
 
 end
