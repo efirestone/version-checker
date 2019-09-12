@@ -122,9 +122,9 @@ class AmcrestCamPlatform < Platform
         :use_ssl => uri.scheme == 'https') do |https|
         https.request(request)
       end
-    rescue
+    rescue => exception
       # Failed to connect.
-      return nil
+      raise_current_version_check_error("Failed to get latest Amcrest firmware list: #{exception}")
     end
 
     body_text = response.body
