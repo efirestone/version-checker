@@ -99,6 +99,8 @@ class AmcrestCamPlatform < Platform
 
     response_body = JSON.parse(response.body)
 
+    raise_current_version_check_error("Fetch parameters failed") unless response_body['result']
+
     # Map to a more readable hash using the requested keys
     result = {}
     response_body['params'].each { |p|
@@ -267,7 +269,7 @@ class AmcrestCamPlatform < Platform
       https.request(request2)
     end
 
-    raise "Camera login failed" unless JSON.parse(response2.body)['result']
+    raise_current_version_check_error("Camera login failed") unless JSON.parse(response2.body)['result']
 
     @session = session_id#.to_i
   end
