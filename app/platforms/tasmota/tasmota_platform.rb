@@ -82,7 +82,7 @@ class TasmotaPlatform < Platform
   end
 
   private def get_latest_version
-    uri = URI.parse('https://github.com/arendst/Sonoff-Tasmota/releases/latest')
+    uri = URI.parse('https://github.com/arendst/Tasmota/releases/latest')
 
     request = Net::HTTP::Get.new(uri.request_uri)
 
