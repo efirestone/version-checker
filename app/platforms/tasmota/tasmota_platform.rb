@@ -86,13 +86,17 @@ class TasmotaPlatform < Platform
 
     request = Net::HTTP::Get.new(uri.request_uri)
 
-    response = Net::HTTP.start(uri.host, uri.port,
-      :use_ssl => uri.scheme == 'https') do |https|
-      https.request(request)
+    begin
+      response = Net::HTTP.start(uri.host, uri.port,
+        :use_ssl => uri.scheme == 'https') do |https|
+        https.request(request)
+      end
+    rescue SocketError => exception
+      raise_current_version_check_error("Failed to connect to #{uri}")
     end
 
     # We expect a URL redirect
-    return nil unless response.code.to_i == 302
+    raise "Unexpected response code #{response.code}" unless response.code.to_i == 302
 
     # The /latest URL redirects to the latest version, so extract the version number from the URL.
     version = URI(response['Location']).path.split('/').last
