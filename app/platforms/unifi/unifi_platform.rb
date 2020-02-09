@@ -72,7 +72,7 @@ class UniFiPlatform < Platform
   private def fetch_current_device_info
     output = `ssh #{@device_config.username}@#{@device_config.host} #{@global_config.ssh.command_line_params} mca-cli-op info`
 
-    raise "Failed to connect to #{@device_config.host}" unless $?.success?
+    raise_current_version_check_error("Failed to connect to #{@device_config.host}") unless $?.success?
 
     info = {}
     output.split("\n").each { |line|
