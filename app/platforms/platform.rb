@@ -17,7 +17,7 @@ class Platform
     end
 
     def message
-      "Error fetching current device version:\n   #{@message}"
+      "Error fetching current device version:\n      #{@message}"
     end
 
   end

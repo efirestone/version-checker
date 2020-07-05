@@ -1,5 +1,6 @@
 require 'net/http'
 require 'nokogiri'
+require 'open3'
 require 'time'
 
 require_relative '../../device_mqtt_payload_factory.rb'
@@ -76,11 +77,13 @@ class BlueIrisPlatform < Platform
 
   # Returns the currently installed version
   private def fetch_current_version
-    output = `ssh #{@device_config.username}@#{@device_config.host} #{@global_config.ssh.command_line_params} wmic datafile where name=\\\"C:\\\\\\\\Program Files\\\\\\\\Blue Iris 4\\\\\\\\BlueIris.exe\\\" get Version`
+    stdout, stderr, status = Open3.capture3("ssh #{@device_config.username}@#{@device_config.host} #{@global_config.ssh.command_line_params} wmic datafile where name=\\\"C:\\\\\\\\Program Files\\\\\\\\Blue Iris 5\\\\\\\\BlueIris.exe\\\" get Version")
 
-    return nil unless $?.success?
+    if !status.success?
+      raise_current_version_check_error("Failed to connect to device: #{stderr.strip}")
+    end
 
-    lines = output.split("\n").map { |l| l.strip }.select { |l| !l.empty? }
+    lines = stdout.split("\n").map { |l| l.strip }.select { |l| !l.empty? }
     attributes = Hash[*lines]
 
     attributes['Version']
