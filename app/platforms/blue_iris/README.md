@@ -33,23 +33,31 @@ Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 then configure the service:
 ```
 Start-Service sshd
+
 # OPTIONAL but recommended:
 Set-Service -Name sshd -StartupType 'Automatic'
-# Confirm the Firewall rule is configured. It should be created automatically by setup. 
-Get-NetFirewallRule -Name *ssh*
+
+# Confirm the Firewall rule is configured (if Windows Firewall is enabled).
+# It should be created automatically by setup.
 # There should be a firewall rule named "OpenSSH-Server-In-TCP", which should be enabled 
+Get-NetFirewallRule -Name *ssh*
 ```
 
-At this point the SSH server is operational. Next is to [add a public key](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement#deploying-the-public-key) for our client machine so that no password is required. To do so, from the client machine that will be running version_checker, run this command:
+At this point the SSH server is operational. Next is to [add a public key](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement#deploying-the-public-key) for our client machine so that no password is required. To do so, from the client machine that will be running version_checker, run the commands below.
+
+Where the `authorized_keys` file lives on the Windows machine will depend on whether or not the user you're logging in as is an administrator on that machine. If the user _is_ an administrator then set `BI_KEYS` to `C:\ProgramData\ssh\administrators_authorized_keys`. If the user is not an administrator then use `C:\ProgramData\ssh\authorized_keys`. If you're unsure which to use, you can check the `AuthorizedKeysFile` value at the bottom of the file `C:\ProgramData\ssh\ssh_config` on the Windows machine. For more info about `authorized_keys` and permissions, see [this article](https://github.com/PowerShell/Win32-OpenSSH/wiki/Security-protection-of-various-files-in-Win32-OpenSSH).
 
 ```
 # Make sure that the .ssh directory exists in your server's home folder
-ssh <user>@<host> mkdir C:\\Users\\<user>\\.ssh
+BI_USER=<Windows user>
+BI_HOST=<Windows hostname or IP>
+BI_KEYS=<See above>
 
-# Use scp to opy the public key file generated previously to authorized_keys on your server
-scp ~/.ssh/id_ed25519.pub <user>@<host>:C:\\Users\\<user>\\.ssh\\authorized_keys
+ssh $BI_USER@$BI_HOST mkdir C:\\ProgramData\\ssh
+
+# Use scp to copy the public key file generated previously to authorized_keys on your server
+scp ~/.ssh/id_ed25519.pub $BI_USER@$BI_HOST:$BI_KEYS
 
 # Appropriately ACL the authorized_keys file on your server
-# This failed, but wasn't required for me on Windows 10.
-ssh --% <user>@<host> powershell -c $ConfirmPreference = 'None'; Repair-AuthorizedKeyPermission C:\Users\<user>\.ssh\authorized_keys
+ssh $BI_USER@$BI_HOST "icacls $BI_KEYS /inheritance:r && icacls $BI_KEYS /grant SYSTEM:(F) && icacls $BI_KEYS /grant BUILTIN\Administrators:(F)"
 ```
