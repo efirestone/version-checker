@@ -63,8 +63,11 @@ def run_checks(config)
           # CurrentVersionCheckErrors are expected sometimes based on runtime conditions
           # (network is down, etc) so log nicely.
           rescue Platform::CurrentVersionCheckError => exception
-            puts "\nSkipping version check for '#{exception.platform}' device at '#{exception.host}'"
-            puts "  #{exception.message}\n\n"
+            puts <<-MSG
+
+Skipping version check for '#{exception.platform}' device at '#{exception.host}'
+   #{exception.message}
+MSG
 
           rescue => exception
             # Other exceptions are programmer error, such as an exception that needed to be
