@@ -65,6 +65,7 @@ class BlueIrisPlatform < Platform
     interface_info = fetch_network_interfaces.first
 
     {
+      :name => 'Blue Iris',
       :manufacturer => 'Blue Iris Software',
       :model => 'Blue Iris',
       :current_version => current_version,
