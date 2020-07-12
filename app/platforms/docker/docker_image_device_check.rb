@@ -4,12 +4,12 @@ require 'time'
 class DockerImageDeviceCheck
 
   def initialize(local_image)
-    tag = local_image[:tag]
+    tag = local_image.tag
     raise "Cannot check for updates of a Docker image that is not from a tag." if tag.nil? || tag.empty?
 
     @local_image = local_image
-    @digest = local_image[:image_id]
-    @repository = local_image[:repository]
+    @digest = local_image.image_id
+    @repository = local_image.repository
     @tag = tag
   end
 
@@ -117,13 +117,13 @@ class DockerImageDeviceCheck
     name = "#{@repository} Docker Image"
 
     info = {
-      :booted_at => @local_image[:booted_at].utc.iso8601,
+      :booted_at => @local_image.booted_at.utc.iso8601,
       :current_version => formatted_version(current_tag, @digest),
       :manufacturer => manufacturer,
       :name => name,
       :model => model,
-      :host_name => @local_image[:host_name],
-      :ipv4_address => @local_image[:ipv4_address],
+      :host_name => @local_image.host_name,
+      :ipv4_address => @local_image.ipv4_address,
     }.compact
 
     return info if latest_image_manifest.nil?

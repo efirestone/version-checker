@@ -1,4 +1,8 @@
 
+class DockerContainer
+    attr_accessor :container_id, :repository, :tag, :image_id, :booted_at, :host_name, :ipv4_address
+end
+
 class LocalDockerContainersList
 
   def initialize(username, host, ssh_params)
@@ -28,15 +32,16 @@ class LocalDockerContainersList
 
       booted_at = Time.iso8601(values[2]) if $?.success?
 
-      {
-        :container_id => container_id,
-        :repository => repository,
-        :tag => tag,
-        :image_id => image_id,
-        :booted_at => booted_at,
-        :host_name => values[3],
-        :ipv4_address => values[4]
-      }
+      container = DockerContainer.new
+      container.container_id = container_id
+      container.repository = repository
+      container.tag = tag
+      container.image_id = image_id
+      container.booted_at = booted_at
+      container.host_name = values[3]
+      container.ipv4_address = values[4]
+
+      container
     }
   end
 
