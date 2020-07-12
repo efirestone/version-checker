@@ -77,7 +77,7 @@ class TasmotaPlatform < Platform
       :booted_at => to_booted_at(values['Uptime']).utc.iso8601,
       :manufacturer => 'Tasmota',
       :model => model,
-      :name => values['Friendly Name 1'],
+      :name => values['Friendly Name 1'] + ' Tasmota',
     }.compact
   end
 
