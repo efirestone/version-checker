@@ -29,13 +29,6 @@ def run_checks(config)
       payload_factory.current_version_sensor_discovery_payload.to_json,
       true
     )
-
-    # Latest Version Sensor
-    client.publish(
-      payload_factory.latest_version_sensor_discovery_topic,
-      payload_factory.latest_version_sensor_discovery_payload.to_json,
-      true
-    )
   end
 
   def publish_version_info(client, payload_factory)

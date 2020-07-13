@@ -43,32 +43,6 @@ class DeviceMqttPayloadFactory
     "#{@id}_Current_Version"
   end
 
-  # Latest Version Sensor Discovery
-
-  def latest_version_sensor_discovery_payload
-    {
-      'uniq_id' => latest_version_id,
-      'name' => "#{sensor_name_prefix} Latest Version",
-      'ic' => 'mdi:arrow-down-bold-circle-outline',
-
-      # For the second payload just include the IDs to reduce traffic.
-      'dev' => {'ids' => device['ids']},
-
-      '~' => "#{@topic}/tele/",
-
-      'stat_t' => '~VERSION',
-      'val_tpl' => '{{value_json.latest_version}}',
-    }
-  end
-
-  def latest_version_sensor_discovery_topic
-    "homeassistant/sensor/#{latest_version_id}/config"
-  end
-
-  private def latest_version_id
-    "#{@id}_Latest_Version"
-  end
-
   # Version Update
 
   def version_update_payload
