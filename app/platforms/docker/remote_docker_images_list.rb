@@ -27,7 +27,7 @@ class RemoteDockerImagesList
     # because the registry version returns all the tags alphabetically ordered, and we really
     # want a chronologically ordered version so that we can check newer images first.
     # Check the git history for the older version.
-    @next_tag_uri = URI.parse("https://hub.docker.com/v2/repositories/#{@repository}/tags/")
+    @next_tag_uri = URI.parse("https://hub.docker.com/v2/repositories/#{uri_repository}/tags/")
   end
 
   # If force_download is true then skip checking the cache
@@ -127,7 +127,7 @@ class RemoteDockerImagesList
   private def download_manifest(reference, accept_type)
     @token ||= get_token
 
-    uri = URI.parse("https://registry-1.docker.io/v2/#{@repository}/manifests/#{reference}")
+    uri = URI.parse("https://registry-1.docker.io/v2/#{uri_repository}/manifests/#{reference}")
     request = Net::HTTP::Get.new(uri.request_uri)
     request['Authorization'] = "Bearer #{@token}"
     request['Accept'] = accept_type
@@ -151,7 +151,7 @@ class RemoteDockerImagesList
     uri = URI.parse('https://auth.docker.io/token')
     uri.query = URI.encode_www_form({
       'service' => 'registry.docker.io',
-      'scope' => "repository:#{@repository}:pull"
+      'scope' => "repository:#{uri_repository}:pull"
     })
     request = Net::HTTP::Get.new(uri.request_uri)
 
@@ -163,6 +163,12 @@ class RemoteDockerImagesList
     json = JSON.parse(response.body)
 
     json['token']
+  end
+
+  private def uri_repository
+    # For URLs, if the repository is a single piece (like `nginx` or `nextcloud`) then
+    # insert "library" before it.
+    @repository.include?('/') ? @repository : "library/#{@repository}"
   end
 
   # Get the next tag in the array. Fetch new ones if necessary.
