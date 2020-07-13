@@ -40,7 +40,7 @@ class DockerPlatform < Platform
       @global_config.ssh.command_line_params
     ).get_containers_list
 
-    monitored_containers = @device_config.monitored_containers
+    monitored_containers = @device_config.monitored_containers.dup
 
     payload_factories = []
     containers.each do |container|
@@ -49,7 +49,7 @@ class DockerPlatform < Platform
       next if tag.nil? || tag.empty?
 
       # Ignore unmonitored containers
-      next unless monitored_containers.nil? || monitored_containers.empty? || monitored_containers.include?(name)
+      next unless monitored_containers.nil? || monitored_containers.empty? || monitored_containers.delete(name) != nil
 
       info = DockerImageDeviceCheck.new(container).get_info
       container_topic = @device_config.topic
@@ -58,6 +58,10 @@ class DockerPlatform < Platform
       unique_id = "docker_#{name}_#{tag}"
 
       payload_factories << DeviceMqttPayloadFactory.new(container_topic, info, unique_id)
+    end
+
+    (monitored_containers || []).each do |container|
+      puts "No Docker container exists named #{container}"
     end
 
     payload_factories
