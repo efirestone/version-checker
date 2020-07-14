@@ -40,7 +40,7 @@ class DeviceMqttPayloadFactory
   end
 
   private def current_version_id
-    "#{@id}_Current_Version"
+    "#{@id}_version"
   end
 
   # Version Update
