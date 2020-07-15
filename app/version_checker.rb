@@ -31,10 +31,13 @@ def run_checks(config)
     )
   end
 
-  def publish_version_info(client, payload_factory)
+  def publish_version_info(client, platform, payload_factory)
+    payload = payload_factory.version_update_payload
+    payload['platform'] = platform
+
     client.publish(
       payload_factory.version_update_topic,
-      payload_factory.version_update_payload.to_json,
+      payload.to_json,
       true
     )
   end
@@ -50,7 +53,7 @@ def run_checks(config)
             platform = @platform_manager.platform_for(device_config, config)
             platform.payload_factories.each do |factory|
               publish_discovery_info(client, factory)
-              publish_version_info(client, factory)
+              publish_version_info(client, device_config.platform, factory)
             end
 
           # CurrentVersionCheckErrors are expected sometimes based on runtime conditions
