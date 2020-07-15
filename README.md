@@ -2,7 +2,7 @@
 
 ## Summary
 
-This tool allows you to monitor whether or not various firmware and software components (devices) are up to date. It queries the currently installed version of the software on those devices and compares that version to the latest version available from the manufacturer. This information is then published to an MQTT broker where other systems can read and display the information.
+This tool allows you to monitor whether or not various firmware and software components (devices) are up to date. It queries the currently installed version of the software on those devices and compares that version to the newest version available from the manufacturer. This information is then published to an MQTT broker where other systems can read and display the information.
 
 The tool supports varying types of components (platforms), such as smart plugs, Docker images, as well as some specific software packages. It is designed so that additional platforms can be added relatively easily.
 

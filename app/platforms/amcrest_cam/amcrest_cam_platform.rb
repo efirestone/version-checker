@@ -56,14 +56,14 @@ class AmcrestCamPlatform < Platform
     network_config = get_network_config
     network_interface = network_config['eth0'] || network_config['eth1'] || network_config['eth2']
     name = get_device_name(model)
-    latest_version = available_versions[model]
+    newest_version = available_versions[model]
 
     {
       :manufacturer => 'Amcrest',
       :model => model,
       :current_version => current_version,
-      :latest_version => latest_version,
-      :latest_version_checked_at => Time.now.utc.iso8601,
+      :newest_version => newest_version,
+      :newest_version_checked_at => Time.now.utc.iso8601,
       :ipv4_address => network_interface['IPAddress'],
       :mac_address => network_interface['PhysicalAddress'],
       :name => name,
@@ -112,7 +112,7 @@ class AmcrestCamPlatform < Platform
   end
 
   # Fetch the versions which are currently available for download.
-  # This will include the latest update to previous major versions.
+  # This will include the newest update to previous major versions.
   private def fetch_available_versions
 
     uri = URI.parse("https://amcrest.com/firmwaredownloads")
@@ -182,7 +182,7 @@ class AmcrestCamPlatform < Platform
       }
 
       # Debug: Verify the data is correct
-      # has_incorrect_data = expected_latest_model_versions[models] != version
+      # has_incorrect_data = expected_newest_model_versions[models] != version
       # if has_incorrect_data
       #   puts "\n\n#{models} => '#{version}'"
       #   puts "Columns: #{columns.inner_html}"
@@ -368,8 +368,8 @@ class AmcrestCamPlatform < Platform
   # Debugging Methods
 
   # The expected models as parsed on 2019-09-07. These will likely need to be updated periodically.
-  private def expected_latest_model_versions
-    @expected_latest_models ||= {
+  private def expected_newest_model_versions
+    @expected_newest_models ||= {
       ["AMDV4M8", "AMDV4M8"] => 'V3.218.00AC000.1.T',
       ["AMDV10804-S3", "AMDV10804-S3"] => 'V3.210.AC01.4',
       ["AMDV10808-S3", "AMDV10808-S3"] => 'V3.210.AC01.4',
@@ -475,7 +475,7 @@ class AmcrestCamPlatform < Platform
       ["NV2104", "NV2104"] => 'V3.200.AC00.0.R.',
       ["NV1104E", "NV1104E"] => '3.200.AC00.0',
     }
-    @expected_latest_models
+    @expected_newest_models
   end
 
 end

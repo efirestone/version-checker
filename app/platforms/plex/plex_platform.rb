@@ -39,12 +39,12 @@ class PlexPlatform < Platform
 
   private def get_info
     library_info = fetch_library_info
-    latest_version_info = fetch_latest_version(library_info[:current_version])
+    newest_version_info = fetch_newest_version(library_info[:current_version])
 
     {
       :manufacturer => 'Plex Inc',
       :model => 'Plex',
-    }.merge(latest_version_info).merge(library_info)
+    }.merge(newest_version_info).merge(library_info)
   end
 
 
@@ -70,7 +70,7 @@ class PlexPlatform < Platform
     info
   end
 
-  private def fetch_latest_version(current_version)
+  private def fetch_newest_version(current_version)
     uri = URI.parse(@device_config.host) + '/updater/status'
     uri.query = URI.encode_www_form({ 'download' => '0' })
 
@@ -85,19 +85,19 @@ class PlexPlatform < Platform
     container = json['MediaContainer']
 
     # If we don't have an update then the 'Release' array will be empty
-    latest_version = nil
+    newest_version = nil
     if container['status'].to_i == 0 && container['Release'] == nil
-      latest_version = current_version
+      newest_version = current_version
     else
-      latest_version = format_version(container['Release'][0]['version'])
+      newest_version = format_version(container['Release'][0]['version'])
     end
 
     info = {}
 
-    info[:latest_version] = latest_version
+    info[:newest_version] = newest_version
 
     checked_at = container['checkedAt']
-    info[:latest_version_checked_at] = Time.at(checked_at).utc.iso8601 unless checked_at == nil
+    info[:newest_version_checked_at] = Time.at(checked_at).utc.iso8601 unless checked_at == nil
 
     info
   end

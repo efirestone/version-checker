@@ -56,10 +56,10 @@ class BlueIrisPlatform < Platform
 
     available_versions = fetch_available_versions
 
-    latest_version = available_versions.sort.last
+    newest_version = available_versions.sort.last
     if !@device_config.include_major_updates
       major_version, rest = current_version.split('.', 2)
-      latest_version = latest_version_with_major(available_versions, major_version)
+      newest_version = newest_version_with_major(available_versions, major_version)
     end
 
     interface_info = fetch_network_interfaces.first
@@ -69,8 +69,8 @@ class BlueIrisPlatform < Platform
       :manufacturer => 'Blue Iris Software',
       :model => 'Blue Iris',
       :current_version => current_version,
-      :latest_version => latest_version,
-      :latest_version_checked_at => Time.now.utc.iso8601,
+      :newest_version => newest_version,
+      :newest_version_checked_at => Time.now.utc.iso8601,
       :ipv4_address => interface_info['IPv4 Address'],
       :mac_address => interface_info['Physical Address'],
     }.compact
@@ -116,20 +116,20 @@ class BlueIrisPlatform < Platform
       next match.captures[0]
     }.compact
 
-    # Figure out the latest version
-    latest_versions = page.css('h2').map { |h2|
+    # Figure out the newest version
+    newest_versions = page.css('h2').map { |h2|
       match = h2.text.match(/Version ([\d.]+)/)
       next nil if match == nil
       next match.captures[0]
     }.compact
 
-    versions = legacy_versions + latest_versions
+    versions = legacy_versions + newest_versions
     versions.sort!
 
     versions
   end
 
-  private def latest_version_with_major(versions, major_version)
+  private def newest_version_with_major(versions, major_version)
     versions_in_major = versions.select { |v|
       major, rest = v.split('.', 2)
       major == major_version

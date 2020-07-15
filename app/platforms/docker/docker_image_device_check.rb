@@ -20,13 +20,13 @@ class DockerImageDeviceCheck
 
     # To start, check if the image associated with the given tag is still the same.
     # If, for example, the 'latest' tag has been updated then it will have a new associated image.
-    latest_manifest_for_tag = image_list.get_manifest(@tag, nil)
-    if latest_manifest_for_tag.nil?
+    newest_manifest_for_tag = image_list.get_manifest(@tag, nil)
+    if newest_manifest_for_tag.nil?
       # Failed to find any info about this image. It's likely not hosted in this Docker registry.
       return formatted_info(@tag, nil, start_time)
     end
 
-    if latest_manifest_for_tag.digest == @digest
+    if newest_manifest_for_tag.digest == @digest
       # We're still up to date. Try to find a better tag (version) if possible.
       # If there isn't an alternative then this will end up downloading all the tags, so set a limit.
       alternate_manifest = get_display_manifest(image_list, @digest, {
@@ -34,7 +34,7 @@ class DockerImageDeviceCheck
       })
       return formatted_info(
         alternate_manifest&.tag || @tag,
-        alternate_manifest || latest_manifest_for_tag,
+        alternate_manifest || newest_manifest_for_tag,
         start_time
       )
     end
@@ -49,11 +49,11 @@ class DockerImageDeviceCheck
     # to. This means that rather than showing the new version/tag as 'latest', we can show it as
     # something like '1.0.3'.
     alternate_local_image_tag = get_display_manifest(image_list, @digest)&.tag
-    alternate_remote_manifest = get_display_manifest(image_list, latest_manifest_for_tag.digest)
+    alternate_remote_manifest = get_display_manifest(image_list, newest_manifest_for_tag.digest)
 
     return formatted_info(
       alternate_local_image_tag,
-      alternate_remote_manifest || latest_manifest_for_tag,
+      alternate_remote_manifest || newest_manifest_for_tag,
       start_time
     )
   end
@@ -105,7 +105,7 @@ class DockerImageDeviceCheck
     nil
   end
 
-  private def formatted_info(current_tag, latest_image_manifest, start_time)
+  private def formatted_info(current_tag, newest_image_manifest, start_time)
     repository_parts = @repository.split('/')
     manufacturer = nil
     model = nil
@@ -126,10 +126,10 @@ class DockerImageDeviceCheck
       :ipv4_address => @local_image.ipv4_address,
     }.compact
 
-    return info if latest_image_manifest.nil?
+    return info if newest_image_manifest.nil?
 
-    info[:latest_version] = formatted_version(latest_image_manifest.tag, latest_image_manifest.digest)
-    info[:latest_version_checked_at] = start_time.utc.iso8601
+    info[:newest_version] = formatted_version(newest_image_manifest.tag, newest_image_manifest.digest)
+    info[:newest_version_checked_at] = start_time.utc.iso8601
 
     info
   end

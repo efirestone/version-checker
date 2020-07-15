@@ -12,11 +12,11 @@ class DeviceMqttPayloadFactory
 
   def current_version_sensor_discovery_payload
     current_version = @state_info[:current_version]
-    latest_version = @state_info[:latest_version]
+    newest_version = @state_info[:newest_version]
 
     icon = case
-    when latest_version == nil ; 'mdi:help-circle-outline'
-    when current_version == latest_version ; 'mdi:check-circle-outline'
+    when newest_version == nil ; 'mdi:help-circle-outline'
+    when current_version == newest_version ; 'mdi:check-circle-outline'
     else 'mdi:alert-circle-outline'
     end
 
@@ -47,18 +47,18 @@ class DeviceMqttPayloadFactory
 
   def version_update_payload
     current_version = @state_info[:current_version]
-    latest_version = @state_info[:latest_version]
+    newest_version = @state_info[:newest_version]
     summary = "Up to date"
-    if latest_version == nil
+    if newest_version == nil
       summary = "Could not check for newer version"
-    elsif current_version != latest_version
-      summary = "#{latest_version} is available"
+    elsif current_version != newest_version
+      summary = "#{newest_version} is available"
     end
 
     {
       'current_version' => current_version,
-      'latest_version' => latest_version,
-      'latest_version_checked_time' => @state_info[:latest_version_checked_at],
+      'newest_version' => newest_version,
+      'newest_version_checked_time' => @state_info[:newest_version_checked_at],
       'summary' => summary,
     }.compact
   end

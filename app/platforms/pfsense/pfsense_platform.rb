@@ -51,7 +51,7 @@ class PfSensePlatform < Platform
 
     @csrf_token = get_csrf_token(dashboard_response)
     @cookie = get_cookie(dashboard_response)
-    current_version, latest_version = fetch_versions
+    current_version, newest_version = fetch_versions
 
     mac_address = fetch_mac_address
 
@@ -64,9 +64,9 @@ class PfSensePlatform < Platform
       :model => 'pfSense',
       :mac_address => mac_address,
       :current_version => current_version,
-      :latest_version => latest_version,
+      :newest_version => newest_version,
       :booted_at => booted_at.utc.iso8601,
-      :latest_version_checked_at => Time.now.utc.iso8601
+      :newest_version_checked_at => Time.now.utc.iso8601
     }
   end
 
@@ -183,7 +183,7 @@ class PfSensePlatform < Platform
     relevant_interfaces.map { |i| attributes_by_interface[i]['MAC Address'] }.compact.first
   end
 
-  private def fetch_latest_version
+  private def fetch_newest_version
     response = ajax_fetch('widgets/widgets/system_information.widget.php', {
       'getupdatestatus' => '1'
     })

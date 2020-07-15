@@ -25,8 +25,8 @@ class TasmotaPlatform < Platform
     info = get_current_info
     return nil if info == nil
 
-    info[:latest_version] = get_latest_version
-    info[:latest_version_checked_at] = Time.now.utc.iso8601
+    info[:newest_version] = get_newest_version
+    info[:newest_version_checked_at] = Time.now.utc.iso8601
 
     info.compact
   end
@@ -81,7 +81,7 @@ class TasmotaPlatform < Platform
     }.compact
   end
 
-  private def get_latest_version
+  private def get_newest_version
     uri = URI.parse('https://github.com/arendst/Tasmota/releases/latest')
 
     request = Net::HTTP::Get.new(uri.request_uri)

@@ -45,7 +45,7 @@ class UniFiPlatform < Platform
     model = current_info['Model']
     product_name = product_name_for(model)
 
-    latest_info = fetch_latest_firmware_info(product_name)
+    newest_info = fetch_newest_firmware_info(product_name)
 
     booted_at = nil
     unless current_info['Uptime'].nil?
@@ -56,8 +56,8 @@ class UniFiPlatform < Platform
     # Convert to a standardized set of keys
     {
       :current_version => current_info['Version'],
-      :latest_version => latest_info['version'],
-      :latest_version_checked_at => Time.now.utc.iso8601,
+      :newest_version => newest_info['version'],
+      :newest_version_checked_at => Time.now.utc.iso8601,
       :host_name => current_info['Hostname'],
       :ipv4_address => current_info['IP Address'],
       :mac_address => current_info['MAC Address'],
@@ -109,7 +109,7 @@ class UniFiPlatform < Platform
 
   # Get information about the latest available firmware for a given model
   # The model should be something like "UAP-AC-LR"
-  private def fetch_latest_firmware_info(model)
+  private def fetch_newest_firmware_info(model)
     # First try to download updates for this specific product
     product_url = "https://www.ui.com/download/?product=#{model.downcase}"
     buffer = open(product_url,
