@@ -1,9 +1,11 @@
 class DeviceMqttPayloadFactory
 
-  def initialize(topic, state_info, id = nil)
+  attr_accessor :topic
+
+  def initialize(topic, state_info, id)
     raise "State info cannot be nil" if state_info == nil
 
-    @id = id || get_unique_id(state_info)
+    @id = id
     @topic = topic
     @state_info = state_info
   end
@@ -89,25 +91,6 @@ class DeviceMqttPayloadFactory
     end
 
     device
-  end
-
-  private def get_unique_id(info)
-    # Use the last six characters of the MAC address if available
-    id = info[:mac_address]
-    id = id.gsub(':', '')[-6..-1].upcase unless id.nil?
-
-    manufacturer = info[:manufacturer]
-    model = info[:model]
-
-    if manufacturer != nil && model != nil
-      id ||= "#{manufacturer}_#{model}"
-    else
-      id ||= model || manufacturer
-    end
-
-    raise "Failed to create unique ID for #{info[:manufacturer]}, #{info[:model]}" if id.nil? || id.empty?
-
-    id
   end
 
   private def sensor_name_prefix

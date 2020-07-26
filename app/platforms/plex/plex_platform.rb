@@ -34,7 +34,7 @@ class PlexPlatform < Platform
   def payload_factories
     info = get_info
     unique_id = info[:machine_id]
-    [DeviceMqttPayloadFactory.new(@device_config.topic, info, unique_id)]
+    [new_mqtt_payload(info, unique_id)]
   end
 
   private def get_info

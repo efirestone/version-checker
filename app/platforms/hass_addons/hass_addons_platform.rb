@@ -56,7 +56,9 @@ class HassAddonsPlatform < Platform
         .gsub('{{addon}}', slug)
       unique_id = "hass_addon_#{slug}"
 
-      payload_factories << DeviceMqttPayloadFactory.new(addon_topic, info, unique_id)
+      payload = new_mqtt_payload(info, unique_id)
+      payload.topic = addon_topic
+      payload_factories << payload
     end
 
     (monitored_addons || []).each do |addon|

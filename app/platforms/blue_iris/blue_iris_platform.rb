@@ -46,7 +46,7 @@ class BlueIrisPlatform < Platform
   end
 
   def payload_factories
-    [DeviceMqttPayloadFactory.new(@device_config.topic, get_info)]
+    [new_mqtt_payload(get_info)]
   end
 
   private def get_info

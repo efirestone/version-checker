@@ -18,7 +18,9 @@ class TasmotaPlatform < Platform
   end
 
   def payload_factories
-    [DeviceMqttPayloadFactory.new(@device_config.topic, get_info)]
+    info = get_info
+    id = info[:mac_address].gsub(':', '')[-6..-1].upcase unless info[:mac_address].nil?
+    [new_mqtt_payload(info, id)]
   end
 
   private def get_info

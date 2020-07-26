@@ -43,8 +43,31 @@ class Platform
     raise "Abstract method called"
   end
 
+  def new_mqtt_payload(info, unique_id = nil)
+    unique_id ||= get_unique_id(info)
+    DeviceMqttPayloadFactory.new(@device_config.topic, info, unique_id)
+  end
+
   def raise_current_version_check_error(message)
     raise CurrentVersionCheckError.new(self.class.name, @device_config.host, message)
+  end
+
+  private def get_unique_id(info)
+    # Use the MAC address if available
+    id = info[:mac_address].gsub(':', '').upcase unless info[:mac_address].nil?
+
+    manufacturer = info[:manufacturer]
+    model = info[:model]
+
+    if manufacturer != nil && model != nil
+      id ||= "#{manufacturer}_#{model}"
+    else
+      id ||= model || manufacturer
+    end
+
+    raise "Failed to create unique ID for #{info[:manufacturer]}, #{info[:model]}" if id.nil? || id.empty?
+
+    "#{self.class.name}_#{id}"
   end
 
 end

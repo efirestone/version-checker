@@ -57,7 +57,9 @@ class DockerPlatform < Platform
         .gsub('{{tag}}', tag)
       unique_id = "docker_#{name}_#{tag}"
 
-      payload_factories << DeviceMqttPayloadFactory.new(container_topic, info, unique_id)
+      payload = new_mqtt_payload(info, unique_id)
+      payload.topic = container_topic
+      payload_factories << payload
     end
 
     (monitored_containers || []).each do |container|

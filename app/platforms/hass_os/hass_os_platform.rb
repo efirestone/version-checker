@@ -40,7 +40,7 @@ class HassOSPlatform < Platform
       :host_name => @device_config.host
     }.compact
 
-    [DeviceMqttPayloadFactory.new(@device_config.topic, info)]
+    [new_mqtt_payload(info)]
   end
 
   # Returns info about the installed add-ons.

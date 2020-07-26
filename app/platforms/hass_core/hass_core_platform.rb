@@ -41,10 +41,7 @@ class HassCorePlatform < Platform
       :host_name => @device_config.host
     }.compact
 
-    puts "Info: #{info}, Hass: #{hass_info}"
-
-    unique_id = "#{mac_address.gsub}"
-    [DeviceMqttPayloadFactory.new(@device_config.topic, info)]
+    [new_mqtt_payload(info)]
   end
 
   # Returns info about the installed add-ons.
