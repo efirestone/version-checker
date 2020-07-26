@@ -1,0 +1,42 @@
+{
+    "name": "Version Checker",
+    "version": "0.5.0",
+    "slug": "version_checker",
+    "description": "Keep track of components that need updating.",
+    "arch": ["amd64"],
+    "startup": "application",
+    "boot": "auto",
+    "options": {
+        "config": {
+            "check_interval": 1800
+        },
+        "mqtt": {
+            "host": "mosquitto.local",
+            "username": "",
+            "password": ""
+        },
+        "version_checks": []
+    },
+    "schema": {
+        "config": {
+            "check_interval": "int(60,)?"
+        },
+        "mqtt": {
+            "host": "match([\\w.]+)",
+            "username": "str",
+            "password": "str"
+        },
+        "version_checks": [
+            {
+                "platform": "str",
+                "host": "str",
+                "topic": "str",
+                "username": "str?",
+                "password": "str?",
+                "auth_token": "str?",
+                "include_major_updates": "bool?",
+                "monitored": "str?"
+            }
+        ]
+    }
+}
