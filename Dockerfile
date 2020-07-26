@@ -1,6 +1,8 @@
 FROM alpine:3.10
 MAINTAINER Eric Firestone <@firetweet>
 
+VOLUME ["/data"]
+
 RUN mkdir /app
 WORKDIR /app
 
@@ -19,7 +21,7 @@ ENV RUNTIME_PACKAGES libxslt-dev openssh-client ruby
 # At the end, remove the apk cache
 RUN apk update && \
     apk upgrade && \
-    apk add $BUILDTIME_PACKAGES && \
+    apk add --no-cache $BUILDTIME_PACKAGES && \
     apk add --update $RUNTIME_PACKAGES && \
     bundle config --global silence_root_warning 1 && \
     bundle config build.nokogiri --use-system-libraries && \
@@ -28,4 +30,4 @@ RUN apk update && \
     rm -rf /var/cache/apk/* && \
     rm /app/Gemfile*
 
-CMD ["/startup.sh"]
+ENTRYPOINT ["/startup.sh"]
