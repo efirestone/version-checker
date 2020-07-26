@@ -1,3 +1,4 @@
+require 'json'
 require 'yaml'
 
 class Config
@@ -67,7 +68,12 @@ class Config
   def initialize(file_path, platform_manager)
     raise "No configuration file found at #{file_path}" unless File.exist?(file_path)
 
-    config = YAML.load_file(file_path)
+    if file_path.end_with?('yml') || file_path.end_with?('yaml')
+      config = YAML.load_file(file_path)
+    else
+      json = File.read(file_path)
+      config = JSON.parse(json)
+    end
 
     @check_interval = self.class.default_check_interval
     if value = config.dig('config', 'check_interval')
