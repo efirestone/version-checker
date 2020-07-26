@@ -98,7 +98,8 @@ while true
   begin
     run_checks(config) unless config == nil
   rescue => exception
-    puts "Version check batch failed: #{exception}\n   #{exception.backtrace.join("\n   ")}"
+    STDERR.puts "Version check batch failed: #{exception}\n   #{exception.backtrace.join("\n   ")}"
   end
+  STDOUT.flush
   sleep(config&.check_interval || Config.default_check_interval)
 end
